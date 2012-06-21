@@ -119,18 +119,22 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
     else if (pos.y > size.height - this.RADIUS) {
         pp = this.p1.getPosition();
         var diff = pos.x - pp.x;
-        if (Math.abs(diff) < pwidth) {
+        if (pos.y > pwidth) {
             // bounce off of bottom paddle
-            this.v.x += diff / pwidth;
-            this.v.y *= -1;
-            if (this.v.x > 1) this.v.x = 1;
-            if (this.v.x < -1) this.v.x = -1;
-            this.v.normalize();
-            pos.y = size.height - this.RADIUS;
-            this.bounceSound.stop();
-            this.bounceSound.play();
-        }
-        else this.endRound(this.p2);
+          //  this.v.x += diff / pwidth;
+          //  this.v.y *= -1;
+          //  if (this.v.x > 1) this.v.x = 1;
+          //  if (this.v.x < -1) this.v.x = -1;
+          //  this.v.normalize();
+          //  pos.y = size.height - this.RADIUS;
+          //  this.bounceSound.stop();
+         //   this.bounceSound.play();
+         this.v.y *= -1;
+		 pos.y = size.height - this.RADIUS;
+		}
+         //this.v.normalize();
+         
+		//else this.endRound(this.p2);
     }
 
     if (this.mode == 1)

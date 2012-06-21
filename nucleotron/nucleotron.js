@@ -27,7 +27,8 @@ lime.scheduleManager.setDisplayRate(1000 / 60);
 		layer = new lime.Layer();	
 	
 	
-	
+	var label = new lime.Label("Nucleotron - test build please ignore").setPosition(150,20);
+		layer.appendChild(label);
 	
 	var btn = new lime.GlossyButton('Start').setSize(100, 40).setPosition(150, 100);
 		goog.events.listen(btn, 'click', function() {
