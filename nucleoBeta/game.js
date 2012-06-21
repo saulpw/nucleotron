@@ -1,4 +1,6 @@
-goog.provide('pong.Game');
+//Game.js
+
+goog.provide('nucleotron.Game');
 
 goog.require('lime.Circle');
 goog.require('lime.Label');
@@ -6,11 +8,12 @@ goog.require('lime.RoundedRect');
 goog.require('lime.Sprite');
 goog.require('lime.animation.FadeTo');
 goog.require('lime.fill.LinearGradient');
-goog.require('pong.Notice');
-goog.require('pong.Player');
+goog.require('nucleotron.Notice');
+goog.require('nucleotron.Player');
 goog.require('lime.audio.Audio');
 
-pong.Game = function(mode) {
+
+nucleotron.Game = function(mode) {
     lime.Sprite.call(this);
 
     this.RADIUS = 20;
@@ -31,11 +34,11 @@ pong.Game = function(mode) {
         setAnchorPoint(0, 0);
     this.appendChild(this.world);
 
-    this.p1 = new pong.Player(1);
+    this.p1 = new nucleotron.Player(1);
     this.p1.enableInteraction();
     this.world.appendChild(this.p1);
 
-    this.p2 = new pong.Player(0);
+    this.p2 = new nucleotron.Player(0);
     if (mode == 1)
     this.p2.enableSimulation();
     else
@@ -47,16 +50,16 @@ pong.Game = function(mode) {
     this.world.appendChild(this.ball);
     this.placeball();
 
-    this.notice = new pong.Notice().setPosition(160, 200).setHidden(false);
+    this.notice = new nucleotron.Notice().setPosition(160, 200).setHidden(false);
     this.appendChild(this.notice);
 
     this.endRoundSound = new lime.audio.Audio('assets/applause.wav');
     this.bounceSound = new lime.audio.Audio('assets/bounce.wav');
 };
-goog.inherits(pong.Game, lime.Sprite);
+goog.inherits(nucleotron.Game, lime.Sprite);
 
 
-pong.Game.prototype.start = function() {
+nucleotron.Game.prototype.start = function() {
     lime.scheduleManager.schedule(this.step_, this);
     this.notice.setHidden(true);
     this.v = new goog.math.Vec2(Math.random() * .5, -.8).normalize();
@@ -64,7 +67,7 @@ pong.Game.prototype.start = function() {
 
 
 //var logs = [];var ii=0;
-pong.Game.prototype.step_ = function(dt) { //Update loop
+nucleotron.Game.prototype.step_ = function(dt) { //Update loop
   /*  logs.push(dt);
     if(ii<200 && !(logs.length%30)){
         console.log(logs.join(' '));
@@ -130,23 +133,23 @@ pong.Game.prototype.step_ = function(dt) { //Update loop
     this.ball.setPosition(pos);
 
 };
-pong.Game.prototype.placeball = function() {
+nucleotron.Game.prototype.placeball = function() {
     this.ball.setPosition(this.WIDTH / 2, this.HEIGHT - this.RADIUS);
     goog.events.listenOnce(this.world, ['touchstart', 'mousedown'], this.start, false, this);
     this.p1.setPosition(this.WIDTH / 2, this.HEIGHT);
     this.p2.setPosition(this.WIDTH / 2, 0);
 };
 
-pong.Game.prototype.endGame = function() {
+nucleotron.Game.prototype.endGame = function() {
     this.notice.title.setText(this.p1.score > this.p2.score ? 'You won!' : 'You lost.');
     this.notice.score.setText(this.p1.score + ' : ' + this.p2.score);
     this.notice.setOpacity(0).setHidden(false);
     var show = new lime.animation.FadeTo(1);
     this.notice.runAction(show);
-    goog.events.listenOnce(this.notice, ['touchstart', 'mousedown'], pong.newgame, false, this);
+    goog.events.listenOnce(this.notice, ['touchstart', 'mousedown'], nucleotron.newgame, false, this);
 }
 
-pong.Game.prototype.endRound = function(winner) {
+nucleotron.Game.prototype.endRound = function(winner) {
     winner.score++;
 
     lime.scheduleManager.unschedule(this.step_, this);

@@ -1,3 +1,4 @@
+//PONG JS
 goog.provide('pong.Game');
 
 goog.require('lime.Circle');
