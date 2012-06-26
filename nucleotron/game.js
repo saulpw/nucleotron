@@ -10,6 +10,7 @@ goog.require('lime.animation.FadeTo');
 goog.require('lime.fill.LinearGradient');
 goog.require('nucleotron.Notice');
 goog.require('nucleotron.Player');
+goog.require('nucleotron.Particle');
 goog.require('lime.audio.Audio');
 
 
@@ -25,7 +26,11 @@ nucleotron.Game = function(mode) {
 
     this.setAnchorPoint(0, 0);
     this.setSize(320, 460);
-
+	
+	//
+	this.particles = new Array();
+	this.particles[0] = null;
+	
     var back = new lime.fill.LinearGradient().addColorStop(0, '#bbb').addColorStop(1, '#DDD');
     this.setFill(back);
 
@@ -65,15 +70,27 @@ nucleotron.Game.prototype.start = function() {
     this.v = new goog.math.Vec2(Math.random() * .5, -.8).normalize();
 };
 
+//spawn particles
+nucleotron.Game.prototype.spawnParticles = function() {
+	
+	pos = this.p1.getPosition();
+	
+	this.tempParticle = new nucleotron.Particle();
+	console.log("Click");
+	this.tempParticle.enableSimulation(pos.x, pos.y - 15);
+	this.world.appendChild(this.tempParticle);
+	if(this.particles.length == 0){
+		this.particles[0] = this.tempParticle;
+	}
+	else{
+		this.particles.push(this.tempParticle);
+	}
+	console.log("particles: " + this.particles.length);
+	
+}
 
 //var logs = [];var ii=0;
 nucleotron.Game.prototype.step_ = function(dt) { //Update loop
-  /*  logs.push(dt);
-    if(ii<200 && !(logs.length%30)){
-        console.log(logs.join(' '));
-        logs=[];
-        ii++;
-    }*/
     var pos = this.ball.getPosition(), size = this.world.getSize();
     pos.x += this.v.x * dt * this.SPEED;
     pos.y += this.v.y * dt * this.SPEED;
@@ -99,17 +116,6 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 		pp = this.p2.getPosition();
         var diff = pos.x - pp.x;
         if (pos.y < pwidth) {
-			/*
-		// bounce off of top paddle
-            this.v.x += diff / pwidth;
-            this.v.y *= -1;
-            if (this.v.x > 1) this.v.x = 1;
-            if (this.v.x < -1) this.v.x = -1;
-            this.v.normalize();
-            pos.y = this.RADIUS;
-            this.bounceSound.stop();
-            this.bounceSound.play();
-			*/
 			this.v.y *= -1;
 			pos.y = this.RADIUS;
 		}
@@ -120,15 +126,6 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
         pp = this.p1.getPosition();
         var diff = pos.x - pp.x;
         if (pos.y > pwidth) {
-            // bounce off of bottom paddle
-          //  this.v.x += diff / pwidth;
-          //  this.v.y *= -1;
-          //  if (this.v.x > 1) this.v.x = 1;
-          //  if (this.v.x < -1) this.v.x = -1;
-          //  this.v.normalize();
-          //  pos.y = size.height - this.RADIUS;
-          //  this.bounceSound.stop();
-         //   this.bounceSound.play();
          this.v.y *= -1;
 		 pos.y = size.height - this.RADIUS;
 		}
@@ -141,6 +138,21 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
     //this.p2.updateTargetPos(pos.x, this.v.y, dt);
 
     this.ball.setPosition(pos);
+	var i;
+	for(i = 0; i < this.particles.length; i++){
+		if(this.particles[i] != null)
+		{
+		    this.particles[i].checkCollision(this.world.getSize());
+			this.particles[i].updatePosition(dt);
+		}
+	}
+	
+	
+	
+	goog.events.listenOnce(this.world, ['touchstart', 'mousedown'], this.spawnParticles, false, this);
+	//console.log("# of particles" + this.particles.length);
+	//iterate through particle objects
+	
 
 };
 nucleotron.Game.prototype.placeball = function() {
@@ -182,3 +194,5 @@ nucleotron.Game.prototype.endRound = function(winner) {
     this.endRoundSound.stop();
     this.endRoundSound.play();
 };
+
+//mouse listener
