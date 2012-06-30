@@ -4,7 +4,7 @@ goog.provide('nucleotron.Particle');
 
 goog.require('lime.Circle');
 
-nucleotron.Particle = function(){
+nucleotron.Particle = function(isPositive){
 	console.log("created particle.js");
 	lime.Sprite.call(this);
 	this.setSize(10,10);
@@ -14,8 +14,15 @@ nucleotron.Particle = function(){
 	this.shape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(200, 0, 0);
 	this.appendChild(this.shape);
     //this.v = goog.math.Vec2(.5,.5);
-	this.vx = 0.5;
-	this.vy = 0.5;
+	this.vx = 0.0;
+	this.vy = 1;
+	this.vxOld = 0.0;
+	this.vyOld = 1;
+	this.POSITIVE = isPositive;
+	this.MASS = 1;
+	this.acclx = 0;
+	this.accly = 0.5;
+	
 	//console.log('particle has been created at ' + paddleX + ":" + paddleY);
 }	
 goog.inherits(nucleotron.Particle, lime.Sprite);
@@ -27,15 +34,23 @@ nucleotron.Particle.prototype.enableSimulation = function(pX, pY) {
 	this.a = 0;
 };
 
+
 nucleotron.Particle.prototype.updatePosition = function(dt) {
+	//v = v0 + at
+	this.vx = this.vxOld * this.acclx * dt;
+	this.vy = this.vyOld * this.accly * dt;
 	//console.log('this particle updated');
 	this.pos = this.shape.getPosition();
     //pos.x += this.v.x * dt * this.SPEED;
     this.pos.x += this.vx * dt * this.SPEED;
 	this.pos.y += this.vy * dt * this.SPEED;
+	//console.log('Acclx:' + this.acclx + 'Accly:' + this.accly);
+	
 	this.shape.setPosition(this.pos.x, this.pos.y);
-	//pos.y += this.v.y * dt * this.SPEED;
-	console.log("x " + this.pos.x + " y " + this.pos.y);
+	
+	this.vxOld = this.vx;
+	this.vyOld = this.vy;
+	
 }
 
 nucleotron.Particle.prototype.checkCollision = function(worldSize){
@@ -59,6 +74,24 @@ nucleotron.Particle.prototype.checkCollision = function(worldSize){
     else if (this.pos.y > worldSize.height - this.RADIUS) {
 		this.vy *= -1;
 		this.pos.y = worldSize.height - this.RADIUS;
-
     }
+}
+
+nucleotron.Particle.prototype.checkParticleCollision = function(particle){
+	var otherPos = particle.shape.getPosition();
+	var otherRad = particle.RADIUS;
+	var distance = Math.sqrt( Math.pow(otherPos.x - this.pos.x, 2) + Math.pow(otherPos.y - this.pos.y, 2));
+	
+	var radii = Math.abs(this.RADIUS + otherRad);
+	
+	if (distance <= radii){
+		//collision
+		console.log('particle collision');
+		this.shape.setFill(0, 200, 0);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

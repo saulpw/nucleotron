@@ -24,6 +24,8 @@ nucleotron.Game = function(mode) {
     this.mode = 1;
     this.winning_score = 10;
 
+	this.GRAVITY = 1; //gravity constant
+	
     this.setAnchorPoint(0, 0);
     this.setSize(320, 460);
 	
@@ -48,11 +50,11 @@ nucleotron.Game = function(mode) {
     this.p2.enableSimulation();
     else
     this.p2.enableInteraction();
-    this.world.appendChild(this.p2);
+    //this.world.appendChild(this.p2);
 
 
     this.ball = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(200, 0, 0);
-    this.world.appendChild(this.ball);
+    //this.world.appendChild(this.ball);
     this.placeball();
 
     this.notice = new nucleotron.Notice().setPosition(160, 200).setHidden(false);
@@ -77,7 +79,7 @@ nucleotron.Game.prototype.spawnParticles = function() {
 	
 	this.tempParticle = new nucleotron.Particle();
 	console.log("Click");
-	this.tempParticle.enableSimulation(pos.x, pos.y - 15);
+	this.tempParticle.enableSimulation(pos.x, pos.y - 60);
 	this.world.appendChild(this.tempParticle);
 	if(this.particles.length == 0){
 		this.particles[0] = this.tempParticle;
@@ -91,59 +93,30 @@ nucleotron.Game.prototype.spawnParticles = function() {
 
 //var logs = [];var ii=0;
 nucleotron.Game.prototype.step_ = function(dt) { //Update loop
-    var pos = this.ball.getPosition(), size = this.world.getSize();
-    pos.x += this.v.x * dt * this.SPEED;
-    pos.y += this.v.y * dt * this.SPEED;
-
-    if (pos.x < this.RADIUS) {
-        // bounce off left wall
-        this.v.x *= -1;
-        pos.x = this.RADIUS;
-        this.bounceSound.stop();
-        this.bounceSound.play();
-    }
-    else if (pos.x > size.width - this.RADIUS) {
-        // bounce off right wall
-        this.v.x *= -1;
-        pos.x = size.width - this.RADIUS;
-        this.bounceSound.stop();
-        this.bounceSound.play();
-    }
-	
-    var pp, pwidth = this.p1.getSize().width / 2 + this.RADIUS;
-    if (pos.y < this.RADIUS) {
-        
-		pp = this.p2.getPosition();
-        var diff = pos.x - pp.x;
-        if (pos.y < pwidth) {
-			this.v.y *= -1;
-			pos.y = this.RADIUS;
-		}
-		
-        //else this.endRound(this.p1);
-    }
-    else if (pos.y > size.height - this.RADIUS) {
-        pp = this.p1.getPosition();
-        var diff = pos.x - pp.x;
-        if (pos.y > pwidth) {
-         this.v.y *= -1;
-		 pos.y = size.height - this.RADIUS;
-		}
-         //this.v.normalize();
-         
-		//else this.endRound(this.p2);
-    }
-
+  
     if (this.mode == 1)
     //this.p2.updateTargetPos(pos.x, this.v.y, dt);
 
-    this.ball.setPosition(pos);
+    //this.ball.setPosition(pos);
 	var i;
 	for(i = 0; i < this.particles.length; i++){
 		if(this.particles[i] != null)
 		{
 		    this.particles[i].checkCollision(this.world.getSize());
 			this.particles[i].updatePosition(dt);
+			//loop through particles
+			var j;
+			for(j = 0; j < this.particles.length; j++){
+				if(i != j && this.particles[j] != null){
+					this.simulatePhysics(this.particles[i],this.particles[j]);
+					
+					if(this.particles[i].checkParticleCollision(this.particles[j])){
+							this.particles[j].setPosition(1000,1000); //move offscreen
+							this.particles.splice(j, 1);
+						}
+				}
+			}
+			
 		}
 	}
 	
@@ -156,10 +129,10 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 
 };
 nucleotron.Game.prototype.placeball = function() {
-    this.ball.setPosition(this.WIDTH / 2, this.HEIGHT - this.RADIUS);
+    //this.ball.setPosition(this.WIDTH / 2, this.HEIGHT - this.RADIUS);
     goog.events.listenOnce(this.world, ['touchstart', 'mousedown'], this.start, false, this);
     this.p1.setPosition(this.WIDTH / 2, this.HEIGHT);
-    this.p2.setPosition(this.WIDTH / 2, 0);
+    //this.p2.setPosition(this.WIDTH / 2, 0);
 };
 
 nucleotron.Game.prototype.endGame = function() {
@@ -195,4 +168,23 @@ nucleotron.Game.prototype.endRound = function(winner) {
     this.endRoundSound.play();
 };
 
-//mouse listener
+//simulate physics
+nucleotron.Game.prototype.simulatePhysics = function(particle1, particle2){
+	//F = G((m1 * m2)/ r^2)
+	//console.log('simulating physics');
+	var posShape1 = particle1.shape.getPosition();
+	var posShape2 = particle2.shape.getPosition();
+	
+	var distX = Math.abs(posShape2.x - posShape1.x);
+	var distY = Math.abs(posShape2.y - posShape1.y);
+	
+	var forceX = this.GRAVITY * ((particle1.MASS * particle2.MASS) / Math.pow(distX, 2));
+	var forceY = this.GRAVITY * ((particle1.MASS * particle2.MASS) / Math.pow(distY, 2));
+	console.log('forcex:' + forceX + 'forceY' + forceY);
+	//f / m = a;
+	particle1.acclx = forceX / particle1.MASS;
+	particle1.accly = forceY / particle1.MASS;
+	
+	//particle2.acclx = forceX / particle2.MASS;
+	//particle2.accly = forceY / particle2.MASS;
+};
