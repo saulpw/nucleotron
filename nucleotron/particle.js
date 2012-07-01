@@ -15,9 +15,9 @@ nucleotron.Particle = function(isPositive){
 	this.appendChild(this.shape);
     //this.v = goog.math.Vec2(.5,.5);
 	this.vx = 0.0;
-	this.vy = 1;
+	this.vy = 0.0;
 	this.vxOld = 0.0;
-	this.vyOld = 1;
+	this.vyOld = 0.0;
 	this.POSITIVE = isPositive;
 	this.MASS = 1;
 	this.acclx = 0;
@@ -37,15 +37,15 @@ nucleotron.Particle.prototype.enableSimulation = function(pX, pY) {
 
 nucleotron.Particle.prototype.updatePosition = function(dt) {
 	//v = v0 + at
-	this.vx = this.vxOld * this.acclx * dt;
-	this.vy = this.vyOld * this.accly * dt;
+	this.vx = this.vxOld + this.acclx * dt;
+	this.vy = this.vyOld + this.accly * dt;
 	//console.log('this particle updated');
 	this.pos = this.shape.getPosition();
     //pos.x += this.v.x * dt * this.SPEED;
-    this.pos.x += this.vx * dt * this.SPEED;
-	this.pos.y += this.vy * dt * this.SPEED;
-	//console.log('Acclx:' + this.acclx + 'Accly:' + this.accly);
-	
+    this.pos.x += this.vx; //* dt * this.SPEED;
+	this.pos.y += this.vy; //* dt * this.SPEED;
+	//console.log('VelX:' + this.vx + 'VelY:' + this.vy);
+	//console.log('posX:' + this.pos.x + 'posY:' + this.pos.y);
 	this.shape.setPosition(this.pos.x, this.pos.y);
 	
 	this.vxOld = this.vx;
@@ -59,20 +59,24 @@ nucleotron.Particle.prototype.checkCollision = function(worldSize){
 	if (this.pos.x < this.RADIUS) {
         // bounce off left wall
         this.vx *= -1;
+		this.vxOld *= -1;
         this.pos.x = this.RADIUS;
     }
     else if (this.pos.x > worldSize.width - this.RADIUS) {
         // bounce off right wall
         this.vx *= -1;
+		this.vxOld *= -1;
         this.pos.x = worldSize.width - this.RADIUS;
     }
 	
     if (this.pos.y < this.RADIUS) {
 		this.vy *= -1;
+		this.vyOld *= -1;
 		this.pos.y = this.RADIUS;
     }
     else if (this.pos.y > worldSize.height - this.RADIUS) {
 		this.vy *= -1;
+		this.vyOld *= -1;
 		this.pos.y = worldSize.height - this.RADIUS;
     }
 }

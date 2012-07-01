@@ -108,7 +108,9 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 			var j;
 			for(j = 0; j < this.particles.length; j++){
 				if(i != j && this.particles[j] != null){
-					this.simulatePhysics(this.particles[i],this.particles[j]);
+				    if(this.particles.length >= 2){
+						this.simulatePhysics(this.particles[i],this.particles[j]);
+					}
 					
 					if(this.particles[i].checkParticleCollision(this.particles[j])){
 							this.particles[j].setPosition(1000,1000); //move offscreen
@@ -175,12 +177,13 @@ nucleotron.Game.prototype.simulatePhysics = function(particle1, particle2){
 	var posShape1 = particle1.shape.getPosition();
 	var posShape2 = particle2.shape.getPosition();
 	
-	var distX = Math.abs(posShape2.x - posShape1.x);
-	var distY = Math.abs(posShape2.y - posShape1.y);
-	
-	var forceX = this.GRAVITY * ((particle1.MASS * particle2.MASS) / Math.pow(distX, 2));
-	var forceY = this.GRAVITY * ((particle1.MASS * particle2.MASS) / Math.pow(distY, 2));
-	console.log('forcex:' + forceX + 'forceY' + forceY);
+	//var distX = Math.abs(posShape2.x - posShape1.x);
+	//var distY = Math.abs(posShape2.y - posShape1.y);
+	var dist = Math.sqrt(Math.pow(posShape2.x - posShape1.x ,2) + Math.pow(posShape2.y - posShape1.y ,2) );
+	//console.log('distxX:' + distX + 'distY' + distY);
+	var forceX = this.GRAVITY * ((particle1.MASS * particle2.MASS) / Math.pow(dist, 2));
+	var forceY = this.GRAVITY * ((particle1.MASS * particle2.MASS) / Math.pow(dist, 2));
+	//console.log('forcex:' + forceX + 'forceY' + forceY);
 	//f / m = a;
 	particle1.acclx = forceX / particle1.MASS;
 	particle1.accly = forceY / particle1.MASS;
