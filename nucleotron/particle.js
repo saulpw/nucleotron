@@ -12,34 +12,34 @@ nucleotron.Particle = function(type){
 	this.setAnchorPoint(.5, 0);
 	this.shape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(200, 0, 0);
 	this.appendChild(this.shape);
-    //this.v = goog.math.Vec2(.5,.5);
 	this.vx = 0.0;
 	this.vy = 0.0;
 	this.vxOld = 0.0;
 	this.vyOld = 0.0;
-	this.POSITIVE = true;
-	this.MASS = 1;
+	this.posCharge = true;
+	this.MASS = 5;
 	this.acclx = 0;
 	this.accly = -0.1;
 	//var type = "protron";
 	if(type == 1){
 		this.shape.setFill(200, 0, 0);
+		this.posCharge = true;
 	}
 	else if(type == 2){
 		this.shape.setFill(0, 0, 200);
 		this.shape.setSize(this.RADIUS * 1.5, this.RADIUS * 1.5);
+		this.posCharge = false;
 	}
 	else if(type == 3){
 		this.shape.setFill(0, 200, 200);
 		this.shape.setSize(this.RADIUS, this.RADIUS);
+		
 	}
-	//console.log('particle has been created at ' + paddleX + ":" + paddleY);
+	
 }	
 goog.inherits(nucleotron.Particle, lime.Sprite);
 
 nucleotron.Particle.prototype.enableSimulation = function(pX, pY) {
-	//this.v = goog.math.Vec2(Math.random() * .5, -.8).normalize();
-    //this.v = ;
     this.shape.setPosition(pX, pY);
 	this.a = 0;
 };
@@ -54,8 +54,6 @@ nucleotron.Particle.prototype.updatePosition = function(dt) {
     //pos.x += this.v.x * dt * this.SPEED;
     this.pos.x += this.vx; //* dt * this.SPEED;
 	this.pos.y += this.vy; //* dt * this.SPEED;
-	//console.log('VelX:' + this.vx + 'VelY:' + this.vy);
-	//console.log('posX:' + this.pos.x + 'posY:' + this.pos.y);
 	this.shape.setPosition(this.pos.x, this.pos.y);
 	
 	this.vxOld = this.vx;
