@@ -4,8 +4,7 @@ goog.provide('nucleotron.Particle');
 
 goog.require('lime.Circle');
 
-nucleotron.Particle = function(isPositive){
-	console.log("created particle.js");
+nucleotron.Particle = function(type){
 	lime.Sprite.call(this);
 	this.setSize(10,10);
 	this.RADIUS = 10;
@@ -18,11 +17,22 @@ nucleotron.Particle = function(isPositive){
 	this.vy = 0.0;
 	this.vxOld = 0.0;
 	this.vyOld = 0.0;
-	this.POSITIVE = isPositive;
+	this.POSITIVE = true;
 	this.MASS = 1;
 	this.acclx = 0;
-	this.accly = 0.5;
-	
+	this.accly = -0.1;
+	//var type = "protron";
+	if(type == 1){
+		this.shape.setFill(200, 0, 0);
+	}
+	else if(type == 2){
+		this.shape.setFill(0, 0, 200);
+		this.shape.setSize(this.RADIUS * 1.5, this.RADIUS * 1.5);
+	}
+	else if(type == 3){
+		this.shape.setFill(0, 200, 200);
+		this.shape.setSize(this.RADIUS, this.RADIUS);
+	}
 	//console.log('particle has been created at ' + paddleX + ":" + paddleY);
 }	
 goog.inherits(nucleotron.Particle, lime.Sprite);
@@ -82,6 +92,11 @@ nucleotron.Particle.prototype.checkCollision = function(worldSize){
 }
 
 nucleotron.Particle.prototype.checkParticleCollision = function(particle){
+	
+	if(particle == null)
+	{
+		return false;
+	}
 	var otherPos = particle.shape.getPosition();
 	var otherRad = particle.RADIUS;
 	var distance = Math.sqrt( Math.pow(otherPos.x - this.pos.x, 2) + Math.pow(otherPos.y - this.pos.y, 2));
@@ -90,8 +105,7 @@ nucleotron.Particle.prototype.checkParticleCollision = function(particle){
 	
 	if (distance <= radii){
 		//collision
-		console.log('particle collision');
-		this.shape.setFill(0, 200, 0);
+		//this.shape.setFill(0, 200, 0);
 		return true;
 	}
 	else
