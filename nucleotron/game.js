@@ -31,7 +31,7 @@ nucleotron.Game = function(mode) {
 	
 	//
 	this.particles = new Array();
-	this.particles[0] = null;
+	//this.particles[0] = null;
 	
     var back = new lime.fill.LinearGradient().addColorStop(0, '#bbb').addColorStop(1, '#DDD');
     this.setFill(back);
@@ -98,13 +98,9 @@ nucleotron.Game.prototype.spawnParticles = function(type) {
 	this.tempParticle = new nucleotron.Particle(type);
 	this.tempParticle.enableSimulation(pos.x, pos.y - 60);
 	this.world.appendChild(this.tempParticle);
-	if(this.particles[0] == null){
-		this.particles[0] = this.tempParticle;
-		this.particles.accly = -0.1;
-	}
-	else{
-		this.particles.push(this.tempParticle);
-	}
+	
+	this.particles.push(this.tempParticle);
+
 	console.log("particles: " + this.particles.length);
 }
 
@@ -122,17 +118,18 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 			//loop through particles
 			var j;
 			for(j = 0; j < this.particles.length; j++){
-				if(i != j && this.particles[j] != null){
-				    if(this.particles.length >= 2){
-						this.simulatePhysics(this.particles[i],this.particles[j]);
-					}
-
-					
+				if(i != j){
+				    this.simulatePhysics(this.particles[i],this.particles[j]);
+				
 					if(this.particles[i].checkParticleCollision(this.particles[j])){
 							this.particles[j].setPosition(1000,1000); //move offscreen
 							this.particles[j].MASS = 0;
 							this.particles.splice(j, 1);
-						}
+							return;
+					}
+				}
+				else{
+					this.particles[i].accly = 0;
 				}
 			}
 			
@@ -188,10 +185,6 @@ nucleotron.Game.prototype.endRound = function(winner) {
 //simulate physics
 nucleotron.Game.prototype.simulatePhysics = function(particle1, particle2){	
 	
-	if(particle1 == null || particle2 == null){
-		particle1.accly = -0.1;
-		return;
-	}
 	var posShape1 = particle1.shape.getPosition();
 	
 	var posShape2 = particle2.shape.getPosition();
