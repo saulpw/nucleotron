@@ -129,7 +129,9 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 					}
 				}
 				else{
+					
 					this.particles[i].accly = 0;
+					this.particles[i].acclx = 0;
 				}
 			}
 			
@@ -203,4 +205,9 @@ nucleotron.Game.prototype.simulatePhysics = function(particle1, particle2){
 	particle1.acclx = forceX / particle1.MASS;
 	particle1.accly = forceY / particle1.MASS;
 	
+};
+
+nucleotron.Game.prototype.resetForce = function(particle){
+	particle.accly = 0;
+	particle.acclx = 0;
 };
