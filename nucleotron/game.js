@@ -95,7 +95,7 @@ nucleotron.Game.prototype.spawnAlpha = function() {
 
 nucleotron.Game.prototype.spawnParticles = function(type) {
 	pos = this.p1.getPosition();
-	this.tempParticle = new nucleotron.Particle(type);
+	this.tempParticle = new nucleotron.Particle(type, 0, 0, 0);
 	this.tempParticle.enableSimulation(pos.x, pos.y - 60);
 	this.world.appendChild(this.tempParticle);
 	
@@ -197,7 +197,7 @@ nucleotron.Game.prototype.simulatePhysics = function(particle1, particle2){
 	var forceY = this.GRAVITY * ((particle1.MASS * particle2.MASS) / Math.pow(dist, 2));
 	
 	//if the charges are the same, repel instead of attract
-	if(particle1.posCharge == particle2.posCharge){
+	if(particle1.charge == particle2.charge){
 		forceX *= -1;
 		forceY *= -1;
 	}
