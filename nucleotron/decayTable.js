@@ -1,7 +1,8 @@
 //DecayTable.js
 goog.require('nucleotron.Isotope');
-goog.require('nucleotron.DecayMechanism'); //TODO make Decay mechanism
-
+//goog.require('nucleotron.DecayMechanism'); //TODO make Decay mechanism
+goog.provide('nucleotron.DecayTable');
+goog.require('nucleotron.DecayMethod');
 //	public var elementSymbols:Object = new Object();
 //	public var elementNames:Object = new Object();
 
@@ -15,7 +16,8 @@ this.numElementsParsed = 0;
 
 nucleotron.DecayTable = function(){
 
-	
+	this.Load('http://localhost/decay-shipped.xml');
+	this.constructNuclids();
 }
 
 
@@ -27,6 +29,7 @@ nucleotron.DecayTable.prototype.Load = function(urlString){
 	  		console.log("incompatible browser"); //if they have IE6 hahaha
 	  	}
 
+	
 		//xml parser goes here
 		xmlhttp.open("GET",urlString,false);
 		xmlhttp.send();

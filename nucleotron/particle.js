@@ -1,16 +1,16 @@
 //particle.js
 
 goog.provide('nucleotron.Particle');
-
+goog.require('nucleotron.Game');
 goog.require('lime.Circle');
 
-nucleotron.Particle = function(type, _Z, _N, _e){
+nucleotron.Particle = function(type){
 	lime.Sprite.call(this);
 	this.particleType = type;
 	
-	this.e = _e;
-	this.N = _N;
-	this.Z = _Z;
+	this.e = 1;
+	this.N = 0;
+	this.Z = 0;
 	this.hadronMass = 1;
 
 	this.setSize(10,10);
@@ -131,92 +131,74 @@ nucleotron.Particle.prototype.checkParticleCollision = function(particle){
 //Decay functions
 nucleotron.Particle.prototype.checkDecay = function (){
 	decay_energy = 0;
-	tempParticle = ;
-	if(this.charge < 0 && ){ //if the charge is negative
-		if(/*random*/ < 0.01){
+	tempParticle = null;
+	if(this.charge < 0 && ( this.Z != 0 || this.N != 0 )){ //if the charge is negative
+		if(Math.random() < 0.01){
 			electrons--;
 			tempParticle = new nucleotron.Particle(type, 0, 0, 1)
 			decay_energy = 5;
 		}
 	} 
-	else if(Math.random() < is){ //ISOTOPE = goes through table and reutrns probably based on Zparticles and Nuetorns
-		//must implement table first.
-
-
-	}
-
-
-	/*
-	else if (Math.random() < isotope.decayprob)
-		{
-			var x:Number = Math.random();
-			for (var i:Number=0; i < isotope.mechanisms.length; i++)
-			{
-				var m:DecayMethod = isotope.mechanisms[i];
-				if (x < m.probability)
-				{
-                    var kev:Number = this.isotope.massexcess;
-					newp = decay(m);
-                    var kevnew:Number = this.isotope.massexcess;
-                    if (newp.isotope.massexcess)
-                    {
-                         //trace(newp.isotope.massexcess);
-                         kevnew += newp.isotope.massexcess;
-                    }
-                    energy = (kev - kevnew);
-                    if (energy < 0)
-                    {
-//                        trace(energy);
-//                       trace("ejected =" + newp.Z + "," + newp.N);
-//                        trace("remainder =" + Z + "," + N);
-                    }
-					break;
+	else if(Math.random() < this.Isotope().decayprob){ //need to initialize ISOTOPE
+		rand = Math.random();
+		for(i = 0; i < Isotope().mechanisms.length; i++){
+			mechs = Isotope().mechanisms[i];
+			
+			if(rand < mech.probability){
+				kev = this.Isotope().massexcess;
+				tempParticle = decay(mechs);
+				newKev = this.Isotope().massexcess;
+				if(tempParticle.isotope.massexcess){
+					kevnew += tempParticle.isotope.massexcess;
 				}
-				else
-				{
-					x -= m.probability;
-					trace("ignoring decay method");
-				}
+				decay_energy = (kev - kevnew);
+				break;
+			}
+			
+			else{
+				rand -= mechs.probability;
+				//ignore decay method
 			}
 		}
-		if (newp)
-		{
-			bounceMovie();
-			newp.pos = pos;
-			
-			var angle:Number = Math.random() * 2 * Math.PI;
-            var vnewp:Vector;
 
-            if (energy >= 0)
-            {
-			    vnewp = Vector.Polar(Math.sqrt(energy/newp.mass), angle);
-            }
-            else
-            {
-                // if endothermic, take it out of our velocity
-                vnewp = Vector.Polar(Math.sqrt(this.energy/this.mass)/10, angle);
-            }
-            newp.velocity = vnewp;
-            var mnewp:Vector = vnewp.mult(newp.mass);
-            this.velocity = this.velocity.sub(mnewp.div(this.mass));
-		}
-		return newp;
 
-		///GETS ISOTOPE
-	public function get isotope():Isotope
-	{
-		return Nucleotron.g_decayTable.getIsotope(Z, N);
 	}
-	*/
+
+	if(tempParticle){
+		//create new particle
+		tempParticle.enableSimulation();
+		nucleotron.Game.addParticle();//TODO Implement addParticle in Game.js
+	}
+
 
 }
 
-nucleotron.Particle.prototype.decay = function(){
+nucleotron.Particle.prototype.decay = function(method){
+	tempParticle = null;
+	if(method.beta == 1){
+		this.Z--;
+		this.N++;
+		tempParticle = new Particle(this.type, 0, 0, -1);
+		emitNutrino();
+
+	}	
+	else if (method.beta == -1){
+		this.Z++;
+		this.N--;
+		tempParticle = new Particle(this.type, 0, 0, -1);
+		emitNutrino();
+	}
+	else{
+		this.Z = method.Z;
+		this.N = method.N;
+		tempParticle = new Particle(this.type, method.Z, method.N, 0);
+	}
+	return tempParticle;
 
 }
 
 nucleotron.Particle.prototype.emitNutrino = function(){
-
+//later
 }
 
 nucleotron.Particle.prototype.isHadron = function(){
@@ -224,5 +206,6 @@ nucleotron.Particle.prototype.isHadron = function(){
 }
 
 nucleotron.Particle.prototype.Isotope = function(){
-	return nucleotron.Game.decayTable.getIsotope(Z, N); //this doesn't work and I know it wont >:(
+	return nucleotron.Game.decayTable.getIsotope(this.Z, this.N); //this doesn't work and I know it wont >:(
+
 }

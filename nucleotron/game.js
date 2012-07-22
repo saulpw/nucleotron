@@ -11,6 +11,7 @@ goog.require('lime.fill.LinearGradient');
 goog.require('nucleotron.Notice');
 goog.require('nucleotron.Player');
 goog.require('nucleotron.Particle');
+goog.require('nucleotron.DecayTable')
 goog.require('lime.audio.Audio');
 
 
@@ -28,7 +29,7 @@ nucleotron.Game = function(mode) {
 	
     this.setAnchorPoint(0, 0);
     this.setSize(320, 550); //orig val 320,460
-	
+	this._decayTable = new nucleotron.DecayTable();
 	//
 	this.particles = new Array();
 	//this.particles[0] = null;
@@ -95,7 +96,7 @@ nucleotron.Game.prototype.spawnAlpha = function() {
 
 nucleotron.Game.prototype.spawnParticles = function(type) {
 	pos = this.p1.getPosition();
-	this.tempParticle = new nucleotron.Particle(type, 0, 0, 0);
+	this.tempParticle = new nucleotron.Particle(type);
 	this.tempParticle.enableSimulation(pos.x, pos.y - 60);
 	this.world.appendChild(this.tempParticle);
 	
@@ -107,7 +108,6 @@ nucleotron.Game.prototype.spawnParticles = function(type) {
 //var logs = [];var ii=0;
 nucleotron.Game.prototype.step_ = function(dt) { //Update loop
   
-    //if (this.mode == 1)
 
 	var i;
 	for(i = 0; i < this.particles.length; i++){
@@ -115,12 +115,13 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 		{
 		    this.particles[i].checkCollision(this.world.getSize());
 			this.particles[i].updatePosition(dt);
+			this.particles[i].checkDecay();
 			//loop through particles
 			var j;
 			for(j = 0; j < this.particles.length; j++){
 				if(i != j){
 				    this.simulatePhysics(this.particles[i],this.particles[j]);
-				
+				    
 					if(this.particles[i].checkParticleCollision(this.particles[j])){
 							this.particles[j].setPosition(1000,1000); //move offscreen
 							this.particles[j].MASS = 0;
