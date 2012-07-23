@@ -2,7 +2,6 @@
 
 goog.provide('nucleotron.Particle');
 goog.require('nucleotron.Isotope');
-goog.require('nucleotron.Game');
 goog.require('lime.Circle');
 
 nucleotron.Particle = function(type, _N, _Z, _e){
@@ -32,7 +31,7 @@ nucleotron.Particle = function(type, _N, _Z, _e){
 	this.MASS = 5;
 	this.acclx = 0;
 	this.accly = -0.1;
-
+	this.particle_type = type;
 	//var type = "protron";
 	if(type == 1){ //protron
 		this.shape.setFill(200, 0, 0);
@@ -44,12 +43,7 @@ nucleotron.Particle = function(type, _N, _Z, _e){
 		this.posCharge = false;	
 	}
 	else if(type == 3){ //alpha
-		this.shape.setFill(0, 0, 200);
-		this.shape.setSize(this.RADIUS * 1.5, this.RADIUS * 1.5);
-		this.shape2 = new lime.Circle().setSize(this.RADIUS * 1.5, this.RADIUS * 1.5).setFill(200,0,0);
-		this.shape2.setAnchorPoint(0.5, 0.5);
-		this.appendChild(this.shape2);
-		this.posCharge = false;
+		this.updateGraphic();
 	}
 	
 }	
@@ -118,9 +112,14 @@ nucleotron.Particle.prototype.checkParticleCollision = function(particle){
 	
 	var radii = Math.abs(this.RADIUS + otherRad);
 	
-	if (distance <= radii){
+	if (distance <= radii && this.particle_type == 3){
+
 		//collision
 		//this.shape.setFill(0, 200, 0);
+		this.Z += particle.Z;
+		this.N += particle.N;
+		this.e += particle.e;
+		this.updateGraphic();
 		return true;
 	}
 	else
@@ -199,6 +198,35 @@ nucleotron.Particle.prototype.decay = function(method){
 
 }
 */
+
+nucleotron.Particle.prototype.updateGraphic = function(){
+	//electron sheild at the bottom
+	if(this.e >= 2){
+		shell = new lime.Circle().setSize(this.RADIUS * 3, this.RADIUS * 3).setFill(0,0,200,0.5);
+		this.shape.appendChild(shell);
+	}
+	else if (this.e >= 5){
+		shell = new lime.Circle().setSize(this.RADIUS * 3, this.RADIUS * 3).setFill(0,0,200,0.7);
+		this.shape.appendChild(shell);
+	}
+	else if (this.e >= 10){
+		shell = new lime.Circle().setSize(this.RADIUS * 3, this.RADIUS * 3).setFill(0,0,200,0.9);
+		this.shape.appendChild(shell);
+	}
+
+	for(i = 0; i < this.Z; i++){
+		tempshape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(200, 0, 0);
+		tempshape.setAnchorPoint(Math.random() + 0.5, Math.random() + 0.5);
+		this.shape.appendChild(tempshape);
+	}
+	for(i = 0; i < this.N; i++){
+		tempshape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(0, 0, 200);
+		tempshape.setAnchorPoint(Math.random() + 0.5, Math.random() + 0.5);
+		this.shape.appendChild(tempshape);
+	}
+	//electron stuff goes here
+
+}
 
 nucleotron.Particle.prototype.emitNutrino = function(){
 //later

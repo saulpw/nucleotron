@@ -15,6 +15,8 @@ goog.require('nucleotron.DecayTable');
 goog.require('nucleotron.DecayMethod');
 goog.require('lime.audio.Audio');
 goog.require('nucleotron.Isotope');
+goog.require('goog.events.KeyCodes');
+
 
 
 nucleotron.Game = function(mode) {
@@ -26,7 +28,7 @@ nucleotron.Game = function(mode) {
     this.HEIGHT = 360;
     this.mode = 1;
     this.winning_score = 10;
-
+    this.velY = 0;
 	this.GRAVITY = 1; //gravity constant
 	
     this.setAnchorPoint(0, 0);
@@ -56,9 +58,9 @@ nucleotron.Game = function(mode) {
     this.p2.enableInteraction();
     //this.world.appendChild(this.p2);
 	//add buttons
-	this.btnPro = new lime.GlossyButton('Protron').setSize(100, 40).setPosition(50, 400);
-	this.btnEle = new lime.GlossyButton('Electron').setSize(100, 40).setPosition(150, 400);
-	this.btnAlp = new lime.GlossyButton('Alpha').setSize(100, 40).setPosition(250, 400);
+	this.btnPro = new lime.GlossyButton('Protron [Z]').setSize(100, 40).setPosition(50, 400);
+	this.btnEle = new lime.GlossyButton('Electron [X]').setSize(100, 40).setPosition(150, 400);
+	this.btnAlp = new lime.GlossyButton('Alpha [C]').setSize(100, 40).setPosition(250, 400);
 		
 	
 	this.world.appendChild(this.btnPro);
@@ -74,6 +76,29 @@ nucleotron.Game = function(mode) {
 
     this.endRoundSound = new lime.audio.Audio('assets/applause.wav');
     this.bounceSound = new lime.audio.Audio('assets/bounce.wav');
+    //keyboard input
+    goog.events.listen(this, ['keydown'], function(evt){
+    	if(evt.keyCode == goog.events.KeyCodes.LEFT) {
+            //this.velY -= 10;
+        	console.log("left");
+        }
+        if(evt.keyCode == goog.events.KeyCodes.RIGHT) {
+           // this.velY += 10;
+           console.log("right");
+        }
+       	if(evt.keyCode == goog.events.KeyCodes.Z) {
+       		//this.spawnProtron();
+       	}
+
+       	if(evt.keyCode == goog.events.KeyCodes.X) {
+       		//this.spawnElectron();
+       	}
+
+       	if(evt.keyCode == goog.events.KeyCodes.C) {
+       		//this.spawnAlpha();
+       	}
+    });
+
 };
 goog.inherits(nucleotron.Game, lime.Sprite);
 
@@ -86,24 +111,20 @@ nucleotron.Game.prototype.start = function() {
 
 //spawn particles
 nucleotron.Game.prototype.spawnProtron = function() {
-	this.spawnParticles(1, 1, 1, 0);
+	this.spawnParticles(1, 1, 1, 0, this.p1.getPosition());
 }
 
 nucleotron.Game.prototype.spawnElectron = function() {
-	this.spawnParticles(2, 1, 1, 1);
+	this.spawnParticles(2, 1, 1, 1, this.p1.getPosition());
 }
 
 nucleotron.Game.prototype.spawnAlpha = function() {
-	this.spawnParticles(3, 1, 1, 1);
+	this.spawnParticles(3, 1, 1, 1, this.p1.getPosition());
 }
 
-nucleotron.Game.prototype.spawnParticles = function(type, n, z, e, pX, pY) {
-	if(pX == null || pY == null){
-		pos = this.p1.getPosition();	
-	}
-	else{
-		pos = new goog.math.Vec2(pX, pY);
-	}
+nucleotron.Game.prototype.spawnParticles = function(type, n, z, e, av_pos) {
+	
+	pos = av_pos;
 	this.tempParticle = new nucleotron.Particle(type, n, z, e);
 	this.tempParticle.enableSimulation(pos.x, pos.y - 60);
 	this.world.appendChild(this.tempParticle);
@@ -158,8 +179,15 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 	goog.events.listenOnce(this.btnPro, ['touchstart', 'mousedown'], this.spawnProtron, false, this);
 	goog.events.listenOnce(this.btnEle, ['touchstart', 'mousedown'], this.spawnElectron, false, this);
 	goog.events.listenOnce(this.btnAlp, ['touchstart', 'mousedown'], this.spawnAlpha, false, this);
+
 	
+
+    //update player  
+	//this.p1.setPosition( this.p1.getPosition() + (this.velY * dt));
+
 };
+
+
 nucleotron.Game.prototype.placeball = function() {
     //this.ball.setPosition(this.WIDTH / 2, this.HEIGHT - this.RADIUS);
     goog.events.listenOnce(this.world, ['touchstart', 'mousedown'], this.start, false, this);
