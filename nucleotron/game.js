@@ -11,8 +11,10 @@ goog.require('lime.fill.LinearGradient');
 goog.require('nucleotron.Notice');
 goog.require('nucleotron.Player');
 goog.require('nucleotron.Particle');
-goog.require('nucleotron.DecayTable')
+goog.require('nucleotron.DecayTable');
+goog.require('nucleotron.DecayMethod');
 goog.require('lime.audio.Audio');
+goog.require('nucleotron.Isotope');
 
 
 nucleotron.Game = function(mode) {
@@ -29,10 +31,11 @@ nucleotron.Game = function(mode) {
 	
     this.setAnchorPoint(0, 0);
     this.setSize(320, 550); //orig val 320,460
-	this._decayTable = new nucleotron.DecayTable();
+	//this._decayTable = new nucleotron.DecayTable(); //initialize decay table.
 	//
 	this.particles = new Array();
 	//this.particles[0] = null;
+	this.Isotope = new nucleotron.Isotope();
 	
     var back = new lime.fill.LinearGradient().addColorStop(0, '#bbb').addColorStop(1, '#DDD');
     this.setFill(back);
@@ -83,20 +86,25 @@ nucleotron.Game.prototype.start = function() {
 
 //spawn particles
 nucleotron.Game.prototype.spawnProtron = function() {
-	this.spawnParticles(1);
+	this.spawnParticles(1, 1, 1, 0);
 }
 
 nucleotron.Game.prototype.spawnElectron = function() {
-	this.spawnParticles(2);
+	this.spawnParticles(2, 1, 1, 1);
 }
 
 nucleotron.Game.prototype.spawnAlpha = function() {
-	this.spawnParticles(3);
+	this.spawnParticles(3, 1, 1, 1);
 }
 
-nucleotron.Game.prototype.spawnParticles = function(type) {
-	pos = this.p1.getPosition();
-	this.tempParticle = new nucleotron.Particle(type);
+nucleotron.Game.prototype.spawnParticles = function(type, n, z, e, pX, pY) {
+	if(pX == null || pY == null){
+		pos = this.p1.getPosition();	
+	}
+	else{
+		pos = new goog.math.Vec2(pX, pY);
+	}
+	this.tempParticle = new nucleotron.Particle(type, n, z, e);
 	this.tempParticle.enableSimulation(pos.x, pos.y - 60);
 	this.world.appendChild(this.tempParticle);
 	
@@ -105,6 +113,13 @@ nucleotron.Game.prototype.spawnParticles = function(type) {
 	console.log("particles: " + this.particles.length);
 }
 
+nucleotron.Game.prototype.spawnMethod = function(method, pX, pY){
+	tempParticle = new nucleotron.Particle(1, method.N, method.Z, 0);
+	tempParticle.enableSimulation(pX, pY);
+	this.world.appendChild(tempParticle);
+	this.particles.push(tempParticle);
+
+}
 //var logs = [];var ii=0;
 nucleotron.Game.prototype.step_ = function(dt) { //Update loop
   
@@ -115,13 +130,13 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 		{
 		    this.particles[i].checkCollision(this.world.getSize());
 			this.particles[i].updatePosition(dt);
-			this.particles[i].checkDecay();
+			//checkDecay(this.particles[i]);
 			//loop through particles
 			var j;
 			for(j = 0; j < this.particles.length; j++){
 				if(i != j){
 				    this.simulatePhysics(this.particles[i],this.particles[j]);
-				    
+				    this.checkDecay(this.particles[i]);
 					if(this.particles[i].checkParticleCollision(this.particles[j])){
 							this.particles[j].setPosition(1000,1000); //move offscreen
 							this.particles[j].MASS = 0;
@@ -208,7 +223,81 @@ nucleotron.Game.prototype.simulatePhysics = function(particle1, particle2){
 	
 };
 
+nucleotron.Game.prototype.checkDecay = function(particle){
+	//check to see if the conditions are right to spawn a particle
+	decay_energy = 0;
+	if(this.charge < 0 && ( this.Z != 0 || this.N != 0 )){ //if the charge is negative
+		if(Math.random() < 0.01){
+			electrons--;
+			tempParticle = new nucleotron.Particle(type, 0, 0, 1);
+			this.spawnParticles(tempParticle, particle.getPosition.x, particle.getPosition.y);
+			decay_energy = 5;
+		}
+	} 
+	else if(Math.random() > particle.Isotope.decayProbab){ //need to initialize ISOTOPE
+		rand = Math.random();
+		for(i = 0; i < particle.Isotope.mechanisms.length; i++){
+			mechs = particle.Isotope.mechanisms[i];
+			
+			if(rand < mechs.probability){
+				kev = particle.Isotope.massexcess;
+				tempMethod = this.decay(mechs);
+				newKev = particle.Isotope.massexcess;
+				if(newKev < 2){
+					newKev += tempMethod.isotope.massexcess;
+				}
+				decay_energy = (kev - newKev);
+				break;
+			}
+			
+			else{
+				rand -= mechs.probability;
+				//ignore decay method
+				//console.log("ignoring decay method");
+			}
+		}
+
+
+	}
+
+	//if(tempParticle){
+		//create new particle
+	//	this.spawnParticles(tempParticle, 50, 50);
+	//}
+
+
+}
+
+nucleotron.Game.prototype.decay = function(method){
+	//spawn a particle in accordance with decay statistics.
+	if(method.beta == 1){
+		this.Z--;
+		this.N++;
+		tempParticle = new nucleotron.Particle(1, 0, 0, -1);
+		this.emitNutrino();
+
+	}	
+	else if (method.beta == -1){
+		this.Z++;
+		this.N--;
+		tempParticle = new nucleotron.Particle(1, 0, 0, -1);
+		this.emitNutrino();
+	}
+	else{
+		this.Z = method.Z;
+		this.N = method.N;
+		tempParticle = new nucleotron.Particle(1, method.Z, method.N, 0);
+	}
+	return tempParticle;
+
+}
+
 nucleotron.Game.prototype.resetForce = function(particle){
 	particle.accly = 0;
 	particle.acclx = 0;
 };
+
+nucleotron.Game.prototype.emitNutrino = function(){
+	//emits a nutrino
+	console.log("nutrino emitted");
+}

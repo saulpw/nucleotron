@@ -1,6 +1,6 @@
 //DecayMethod.js
 goog.provide('nucleotron.DecayMethod');
-/*
+
 	this.Z;
 	this.N;
 	this.beta;
@@ -8,14 +8,13 @@ goog.provide('nucleotron.DecayMethod');
 
 	nucleotron.DecayMethod = function(z, n, b, p) 
 	{ 
-		this.Z = int(z);
-		this.N = int(n);
-		this.beta = int(b);
+		this.Z = z;
+		this.N = n;
+		this.beta = b;
 	
 		if (p)
-			this.probability = Number(p);
+			this.probability = p;
 		else
 			this.probability = 1.0;
 		//trace(Z + "," + N + "," + beta + "," + probability);
 	}
-*/

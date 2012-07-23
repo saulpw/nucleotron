@@ -1,16 +1,17 @@
 //particle.js
 
 goog.provide('nucleotron.Particle');
+goog.require('nucleotron.Isotope');
 goog.require('nucleotron.Game');
 goog.require('lime.Circle');
 
-nucleotron.Particle = function(type){
+nucleotron.Particle = function(type, _N, _Z, _e){
 	lime.Sprite.call(this);
 	this.particleType = type;
-	
-	this.e = 1;
-	this.N = 0;
-	this.Z = 0;
+	this.Isotope = new nucleotron.Isotope();
+	this.e = _e;
+	this.N = _N;
+	this.Z = _Z;
 	this.hadronMass = 1;
 
 	this.setSize(10,10);
@@ -129,6 +130,7 @@ nucleotron.Particle.prototype.checkParticleCollision = function(particle){
 }
 
 //Decay functions
+/*
 nucleotron.Particle.prototype.checkDecay = function (){
 	decay_energy = 0;
 	tempParticle = null;
@@ -144,7 +146,7 @@ nucleotron.Particle.prototype.checkDecay = function (){
 		for(i = 0; i < Isotope().mechanisms.length; i++){
 			mechs = Isotope().mechanisms[i];
 			
-			if(rand < mech.probability){
+			if(rand < mechs.decay){ //decay probably would go here
 				kev = this.Isotope().massexcess;
 				tempParticle = decay(mechs);
 				newKev = this.Isotope().massexcess;
@@ -174,7 +176,7 @@ nucleotron.Particle.prototype.checkDecay = function (){
 }
 
 nucleotron.Particle.prototype.decay = function(method){
-	tempParticle = null;
+	tempParticle = new nucleotron.pa;
 	if(method.beta == 1){
 		this.Z--;
 		this.N++;
@@ -196,9 +198,11 @@ nucleotron.Particle.prototype.decay = function(method){
 	return tempParticle;
 
 }
+*/
 
 nucleotron.Particle.prototype.emitNutrino = function(){
 //later
+console.log("emit nutrino");
 }
 
 nucleotron.Particle.prototype.isHadron = function(){
@@ -206,6 +210,5 @@ nucleotron.Particle.prototype.isHadron = function(){
 }
 
 nucleotron.Particle.prototype.Isotope = function(){
-	return nucleotron.Game.decayTable.getIsotope(this.Z, this.N); //this doesn't work and I know it wont >:(
-
+	return this.Isotope;
 }

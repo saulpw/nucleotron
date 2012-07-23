@@ -15,33 +15,43 @@ this.numElementsParsed = 0;
 
 
 nucleotron.DecayTable = function(){
-
-	this.Load('http://localhost/decay-shipped.xml');
+	this.doc;
+	this.docELement;
+	this.firstNode;
+	this.LoadXML('decay-shipped.xml');
 	this.constructNuclids();
 }
 
 
 nucleotron.DecayTable.prototype.Load = function(urlString){
-	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
-	  		xmlhttp = new XMLHttpRequest();
-	  	}
-	  	else{
-	  		console.log("incompatible browser"); //if they have IE6 hahaha
-	  	}
+		_xml.ignoreWhite = true;
+        if(_xml.onLoad){
+        	this.constructNuclids();
+        }
+        else
+        {
+        	console.log("unable to load files");
+        }
+        _xml.load(urlString);
 
-	
-		//xml parser goes here
-		xmlhttp.open("GET",urlString,false);
-		xmlhttp.send();
-		xmlDoc=xmlhttp.responseXML;
+}
+
+nucleotron.DecayTable.prototype.LoadXML = function(urlString){
+	//xmlDoc.getElementsByTagName("to")[0].childNodes[0].nodeValue;
+	this.doc = this.loadXMLDoc(urlString);
+	this.docElement = this.doc.documentElement;
+	this.firstNode=get_firstchild(this.docElement);
+
 }
 
 nucleotron.DecayTable.prototype.constructNuclids = function(){
 
-	main = xmlDoc.firstChild;
-	i = 0;
-	for(i in main.childNodes){
-		tempNode = main.childNodes[i];
+/*
+for (i=0;i<firstNode.childNodes.length;i++)
+*/
+
+	for(i = 0; i < this.firstNode.childNodes.length; i++ ){
+		tempNode = this.firstNode.childNodes[i];
 		if (tempNode.nodeName = "element"){
 			Z = Number(tempNode.attributes.z);
 			this.elementNames[Z] = tempNode.attributes.name;
@@ -49,10 +59,10 @@ nucleotron.DecayTable.prototype.constructNuclids = function(){
 		}
 	}
 
-	currentNode = xmlDoc.firstChild;
+	currentNode = get_firstchild(this.docElement);
 	while(currentNode){
 		this.populateTable(currentNode);
-		currentNode = currentNode.nextSibling;
+		currentNode = get_nextSibling(currentNode);
 	}
 
 }
@@ -103,4 +113,18 @@ nucleotron.DecayTable.prototype.getIsotope = function(z, n){
 	return this[z][n];
 }
 
+nucleotron.DecayTable.prototype.loadXMLDoc = function(dname)
+{
+	if (window.XMLHttpRequest)
+	  {
+	  xhttp=new XMLHttpRequest();
+	  }
+	else
+	  {
+	  xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+	xhttp.open("GET",dname,false);
+	xhttp.send();
+	return xhttp.responseXML;
+}
 
