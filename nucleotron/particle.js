@@ -202,29 +202,29 @@ nucleotron.Particle.prototype.decay = function(method){
 nucleotron.Particle.prototype.updateGraphic = function(){
 	//electron sheild at the bottom
 	if(this.e >= 2){
-		shell = new lime.Circle().setSize(this.RADIUS * 3, this.RADIUS * 3).setFill(0,0,200,0.5);
+		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.5).setAnchorPoint(0, 0);
 		this.shape.appendChild(shell);
 	}
 	else if (this.e >= 5){
-		shell = new lime.Circle().setSize(this.RADIUS * 3, this.RADIUS * 3).setFill(0,0,200,0.7);
+		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.7).setAnchorPoint(0, 0);
 		this.shape.appendChild(shell);
 	}
 	else if (this.e >= 10){
-		shell = new lime.Circle().setSize(this.RADIUS * 3, this.RADIUS * 3).setFill(0,0,200,0.9);
+		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.9).setAnchorPoint(0, 0);
 		this.shape.appendChild(shell);
 	}
 
 	for(i = 0; i < this.Z; i++){
 		tempshape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(200, 0, 0);
-		tempshape.setAnchorPoint(Math.random() + 0.5, Math.random() + 0.5);
+		tempshape.setAnchorPoint(Math.random() * 2 - 1, Math.random() * 2 - 1);
 		this.shape.appendChild(tempshape);
 	}
 	for(i = 0; i < this.N; i++){
 		tempshape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(0, 0, 200);
-		tempshape.setAnchorPoint(Math.random() + 0.5, Math.random() + 0.5);
+		tempshape.setAnchorPoint(Math.random() * 2 - 1, Math.random() * 2 - 1);
 		this.shape.appendChild(tempshape);
 	}
-	//electron stuff goes here
+	
 
 }
 
