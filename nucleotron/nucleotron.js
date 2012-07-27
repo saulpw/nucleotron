@@ -41,8 +41,13 @@ lime.scheduleManager.setDisplayRate(1000 / 60);
 		
 	director.makeMobileWebAppCapable();
 
-// set current scene active
+	//key listners?
+	
+
+	// set current scene active
 	director.replaceScene(scene);
+
+
 
 }
 

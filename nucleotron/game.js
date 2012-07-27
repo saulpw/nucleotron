@@ -77,28 +77,23 @@ nucleotron.Game = function(mode) {
     this.endRoundSound = new lime.audio.Audio('assets/applause.wav');
     this.bounceSound = new lime.audio.Audio('assets/bounce.wav');
     //keyboard input
-    goog.events.listen(this, ['keydown'], function(evt){
-    	if(evt.keyCode == goog.events.KeyCodes.LEFT) {
-            //this.velY -= 10;
-        	console.log("left");
-        }
-        if(evt.keyCode == goog.events.KeyCodes.RIGHT) {
-           // this.velY += 10;
-           console.log("right");
-        }
-       	if(evt.keyCode == goog.events.KeyCodes.Z) {
-       		//this.spawnProtron();
-       	}
-
-       	if(evt.keyCode == goog.events.KeyCodes.X) {
-       		//this.spawnElectron();
-       	}
-
-       	if(evt.keyCode == goog.events.KeyCodes.C) {
-       		//this.spawnAlpha();
-       	}
-    });
-
+   	goog.events.listen(document, ['keydown'], function(e) {
+                if (e.keyCode == goog.events.KeyCodes.UP) {
+                        console.log("UP");
+                }
+                if (e.keyCode == goog.events.KeyCodes.RIGHT) {
+                        console.log("RIGHT");
+                        this.velY = 40;
+                }
+                if (e.keyCode == goog.events.KeyCodes.DOWN) {
+                        console.log("DOWN");
+                }
+                if (e.keyCode == goog.events.KeyCodes.LEFT) {
+                        console.log("LEFT");
+                        this.velY = -40;
+                }
+                //circle.setPosition(player.x, player.y);
+        });
 };
 goog.inherits(nucleotron.Game, lime.Sprite);
 
@@ -181,9 +176,7 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 	goog.events.listenOnce(this.btnAlp, ['touchstart', 'mousedown'], this.spawnAlpha, false, this);
 
 	
-
-    //update player  
-	//this.p1.setPosition( this.p1.getPosition() + (this.velY * dt));
+	this.p1.setPosition(this.p1.getPosition().x += (this.velY * dt),this.p1.getPosition().y );
 
 };
 

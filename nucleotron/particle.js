@@ -200,32 +200,45 @@ nucleotron.Particle.prototype.decay = function(method){
 */
 
 nucleotron.Particle.prototype.updateGraphic = function(){
+	//destroy Shape.
+	this.shape.removeAllChildren();
+	//range mounts
+	min = -1.5;
+	max = 1.5;
 	//electron sheild at the bottom
 	if(this.e >= 2){
-		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.5).setAnchorPoint(0, 0);
+		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.5).setAnchorPoint(0.5, 0.5);
 		this.shape.appendChild(shell);
 	}
 	else if (this.e >= 5){
-		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.7).setAnchorPoint(0, 0);
+		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.7).setAnchorPoint(1, 1);
 		this.shape.appendChild(shell);
 	}
 	else if (this.e >= 10){
-		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.9).setAnchorPoint(0, 0);
+		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.9).setAnchorPoint(1, 1);
 		this.shape.appendChild(shell);
 	}
 
 	for(i = 0; i < this.Z; i++){
-		tempshape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(200, 0, 0);
-		tempshape.setAnchorPoint(Math.random() * 2 - 1, Math.random() * 2 - 1);
+		tempshape = new lime.Circle().setSize(this.RADIUS * 1.5, this.RADIUS * 1.5).setFill(200, 0, 0);
+		tempX = min + (max - min) * Math.random();
+		tempY = min + (max - min) * Math.random();
+		tempshape.setAnchorPoint(tempX, tempY);
 		this.shape.appendChild(tempshape);
 	}
 	for(i = 0; i < this.N; i++){
-		tempshape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(0, 0, 200);
-		tempshape.setAnchorPoint(Math.random() * 2 - 1, Math.random() * 2 - 1);
+		tempshape = new lime.Circle().setSize(this.RADIUS * 1.5, this.RADIUS * 1.5).setFill(0, 0, 200);
+		tempX = min + (max - min) * Math.random();
+		tempY = min + (max - min) * Math.random();
+		tempshape.setAnchorPoint(tempX, tempY);
 		this.shape.appendChild(tempshape);
 	}
 	
 
+}
+
+nucleotron.Particle.prototype.moveParticles = function(){
+	
 }
 
 nucleotron.Particle.prototype.emitNutrino = function(){

@@ -45,6 +45,10 @@ nucleotron.Player.prototype.enableSimulation = function() {
     this.a = 0;
 };
 
+nucleotron.Player.prototype.updatePos = function(velY, dt){
+    this.setPosition(this.getPosition().x, this.getPosition.y() + velY);
+}
+
 nucleotron.Player.prototype.updateTargetPos = function(ballx,vy,dt) {
     var px = this.getPosition().x;
     var diff = ballx - px;
