@@ -12,6 +12,7 @@ nucleotron.Particle = function(type, _N, _Z, _e){
 	this.N = _N;
 	this.Z = _Z;
 	this.hadronMass = 1;
+	this.electronMass = 0.2;
 
 	this.setSize(10,10);
 	
@@ -72,6 +73,11 @@ nucleotron.Particle.prototype.updatePosition = function(dt) {
 	
 }
 
+nucleotron.Particle.prototype.getMass = function(){
+	//	return (Math.abs(this.N) + Math.abs(this.Z)) * hadronMass + Math.abs(this.e) * electronMass;
+	return (Math.abs(this.N) + Math.abs(this.Z)) * this.hadronMass + Math.abs(this.e) * this.electronMass;
+}
+
 nucleotron.Particle.prototype.checkCollision = function(worldSize){
 	this.pos = this.shape.getPosition();
 	
@@ -127,6 +133,8 @@ nucleotron.Particle.prototype.checkParticleCollision = function(particle){
 		return false;
 	}
 }
+
+
 
 //Decay functions
 /*

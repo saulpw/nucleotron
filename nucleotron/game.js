@@ -79,7 +79,8 @@ nucleotron.Game = function(mode) {
     //keyboard input
    	goog.events.listen(document, ['keydown'], function(e) {
                 if (e.keyCode == goog.events.KeyCodes.UP) {
-                        console.log("UP");
+                        console.log("Z");
+                        nucleotron.Game.prototype.spawnProtron();
                 }
                 if (e.keyCode == goog.events.KeyCodes.RIGHT) {
                         console.log("RIGHT");
@@ -92,7 +93,7 @@ nucleotron.Game = function(mode) {
                         console.log("LEFT");
                         this.velY = -40;
                 }
-                //circle.setPosition(player.x, player.y);
+
         });
 };
 goog.inherits(nucleotron.Game, lime.Sprite);
@@ -151,7 +152,7 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 			var j;
 			for(j = 0; j < this.particles.length; j++){
 				if(i != j){
-				    this.simulatePhysics(this.particles[i],this.particles[j]);
+				    this.simulateCoulombs(this.particles[i],this.particles[j]);
 				    this.checkDecay(this.particles[i]);
 					if(this.particles[i].checkParticleCollision(this.particles[j])){
 							this.particles[j].setPosition(1000,1000); //move offscreen
@@ -175,8 +176,21 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 	goog.events.listenOnce(this.btnEle, ['touchstart', 'mousedown'], this.spawnElectron, false, this);
 	goog.events.listenOnce(this.btnAlp, ['touchstart', 'mousedown'], this.spawnAlpha, false, this);
 
+
+	goog.events.listenOnce(document, ['keydown'], function(e) {
+	          if (e.keyCode == goog.events.KeyCodes.Z) {
+                	this.spawnProtron;
+                	console.log("Z key pressed");
+                }
+                if (e.keyCode == goog.events.KeyCodes.C) {
+                	this.spawnElectron;
+                }
+                if (e.keyCode == goog.events.KeyCodes.X) {
+                	this.spawnAlpha;
+                }
+    }, false, this);
 	
-	this.p1.setPosition(this.p1.getPosition().x += (this.velY * dt),this.p1.getPosition().y );
+	this.p1.setPosition(this.p1.getPosition().x += (this.velY * dt), this.p1.getPosition().y );
 
 };
 
@@ -242,6 +256,26 @@ nucleotron.Game.prototype.simulatePhysics = function(particle1, particle2){
 	particle1.acclx = forceX / particle1.MASS;
 	particle1.accly = forceY / particle1.MASS;
 	
+};
+
+//simulate physics according to coulomb's law
+nucleotron.Game.prototype.simulateCoulombs = function(particle1, particle2){
+	var coluConst = 8.854187; 
+
+	var posShape1 = particle1.shape.getPosition();
+	
+	var posShape2 = particle2.shape.getPosition();
+	
+	var dist = Math.sqrt(Math.pow(posShape2.x - posShape1.x ,2) + Math.pow(posShape2.y - posShape1.y ,2) );
+	//mass	return (Math.abs(this.N) + Math.abs(this.Z)) * hadronMass + Math.abs(this.e) * electronMass;
+
+	var forceX = coluConst * (Math.abs(particle1.Z * particle2.Z) / Math.pow(dist, 2));
+	var forceY = coluConst * (Math.abs(particle1.Z * particle2.Z) / Math.pow(dist, 2));
+
+	particle1.acclx = forceX / particle1.MASS;
+	particle1.accly = forceY / particle1.MASS;
+
+
 };
 
 nucleotron.Game.prototype.checkDecay = function(particle){
