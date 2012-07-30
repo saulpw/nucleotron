@@ -13,6 +13,7 @@ goog.require('nucleotron.Player');
 goog.require('nucleotron.Particle');
 goog.require('nucleotron.DecayTable');
 goog.require('nucleotron.DecayMethod');
+goog.require('nucleotron.Element');
 goog.require('lime.audio.Audio');
 goog.require('nucleotron.Isotope');
 goog.require('goog.events.KeyCodes');
@@ -42,6 +43,8 @@ nucleotron.Game = function(mode) {
     var back = new lime.fill.LinearGradient().addColorStop(0, '#bbb').addColorStop(1, '#DDD');
     this.setFill(back);
 
+    this.elementList = new lime.Sprite().setPosition(50, 430); //sprite to hold element list
+    this.appendChild(this.elementList)
 
     this.world = new lime.Sprite().setFill('#FFF').setSize(this.WIDTH, this.HEIGHT).setPosition(10, 50).
         setAnchorPoint(0, 0);
@@ -158,6 +161,7 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 							this.particles[j].setPosition(1000,1000); //move offscreen
 							this.particles[j].MASS = 0;
 							this.particles.splice(j, 1);
+							this.buildElementDisplay(this.particles);
 							return;
 					}
 				}
@@ -356,3 +360,17 @@ nucleotron.Game.prototype.emitNutrino = function(){
 	//emits a nutrino
 	console.log("nutrino emitted");
 }
+
+//build list of elements and display
+nucleotron.Game.prototype.buildElementDisplay = function(particleList){
+	this.elementList.removeAllChildren();
+	//print the highest N number of particles, where N is the amout that'll fit
+	for(var i = 0; i < particleList.length; i++){
+		if(particleList[i].Z >= 2){ //arbitrary for creating a particle
+			tempElement = new nucleotron.Element(particleList[i]);
+			this.elementList.appendChild(tempElement);
+			tempElement.setPosition(i * 50, 60);
+
+		}
+	}
+};

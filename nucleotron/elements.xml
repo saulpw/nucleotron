@@ -1,0 +1,96 @@
+<element name="Neutronium" symbol="n"   z="0"   sound="neutronium.mp3"/>
+<element name="Hydrogen"   symbol="H"   z="1" n="0" sound="hydrogen.mp3"/>
+<element name="Deuterium"  symbol="D"   z="1" n="1" sound="deuterium.mp3"/>
+<element name="Tritium"    symbol="T"   z="1" n="2" sound="tritium.mp3"/>
+<element name="Helium"     symbol="He"  z="2"   sound="helium.mp3"/>
+<element name="Lithium"    symbol="Li"  z="3"   sound="lithium.mp3"/>
+<element name="Beryllium"  symbol="Be"  z="4"   sound="beryllium.mp3"/>
+<element name="Boron"      symbol="B"   z="5"   sound="boron.mp3"/>
+<element name="Carbon"     symbol="C"   z="6"   sound="carbon.mp3"/>
+<element name="Nitrogen"   symbol="N"   z="7"   sound="nitrogen.mp3"/>
+<element name="Oxygen"     symbol="O"   z="8"   sound="oxygen.mp3"/>
+<element name="Fluorine"   symbol="F"   z="9"   sound="fluorine.mp3"/>
+<element name="Neon"       symbol="Ne"  z="10"  sound="neon.mp3"/>
+<element name="Sodium" symbol="Na"   z="11"   sound=""  />
+<element name="Magnesium" symbol="Mg"   z="12"   sound=""  />
+<element name="Aluminum" symbol="Al"   z="13"   sound=""  />
+<element name="Silicon" symbol="Si"   z="14"   sound=""   />
+<element name="Phosphorus" symbol="P"   z="15"   sound=""   />
+<element name="Sulfur" symbol="S"   z="16"   sound=""   />
+<element name="Chlorine" symbol="Cl"   z="17"   sound=""   />
+<element name="Argon" symbol="Ar"   z="18"   sound=""/>
+<element name="Potassium" symbol="K"   z="19"   sound=""  />
+<element name="Calcium" symbol="Ca"   z="20"   sound=""   />
+<element name="Scandium" symbol="Sc"   z="21"   sound=""   />
+<element name="Titanium" symbol="Ti"   z="22"   sound=""   />
+<element name="Vanadium" symbol="V"   z="23"   sound=""   />
+<element name="Chromium" symbol="Cr"   z="24"   sound=""   />
+<element name="Manganese" symbol="Mn"   z="25"   sound=""   />
+<element name="Iron" symbol="Fe"   z="26"   sound=""   />
+<element name="Cobalt" symbol="Co"   z="27"   sound=""   />
+<element name="Nickel" symbol="Ni"   z="28"   sound=""  />
+<element name="Copper" symbol="Cu"   z="29"   sound=""   />
+<element name="Zinc" symbol="Zn"   z="30"   sound=""  />
+<element name="Gallium" symbol="Ga"   z="31"   sound=""  />
+<element name="Germanium" symbol="Ge"   z="32"   sound="" />
+<element name="Arsenic" symbol="As"   z="33"   sound=""   />
+<element name="Selenium" symbol="Se"   z="34"   sound=""   />
+<element name="Bromine" symbol="Br"   z="35"   sound=""   />
+<element name="Krypton" symbol="Kr"   z="36"   sound=""   />
+<element name="Rubidium" symbol="Rb"   z="37"   sound=""  />
+<element name="Strontium" symbol="Sr"   z="38"   sound=""   />
+<element name="Yttrium" symbol="Y"   z="39"   sound=""  />
+<element name="Zirconium" symbol="Zr"   z="40"   sound=""  />
+<element name="Niobium" symbol="Nb"   z="41"   sound=""   />
+<element name="Molybdenum" symbol="Mo"   z="42"   sound=""  />
+<element name="Technetium" symbol="Tc"   z="43"   sound=""  />
+<element name="Ruthenium" symbol="Ru"   z="44"   sound=""  />
+<element name="Rhodium" symbol="Rh"   z="45"   sound=""  />
+<element name="Palladium" symbol="Pd"   z="46"   sound=""  />
+<element name="Silver" symbol="Ag"   z="47"   sound=""  />
+<element name="Cadmium" symbol="Cd"   z="48"   sound=""   />
+<element name="Indium" symbol="In"   z="49"   sound=""   />
+<element name="Tin" symbol="Sn"   z="50"   sound=""   />
+<element name="Antimony" symbol="Sb"   z="51"   sound=""  />
+<element name="Tellurium" symbol="Te"   z="52"   sound=""   />
+<element name="Iodine" symbol="I"   z="53"   sound=""   />
+<element name="Xenon" symbol="Xe"   z="54"   sound=""  />
+<element name="Cesium" symbol="Cs"   z="55"   sound=""  />
+<element name="Barium" symbol="Ba"   z="56"   sound=""   />
+<element name="Larthanum" symbol="La"   z="57"   sound=""  />
+<element name="Cerium" symbol="Ce"   z="58"   sound=""  />
+<element name="Praseodymium" symbol="Pr"   z="59"   sound="" />
+<element name="Neodymium" symbol="Nd"   z="60"   sound=""  />
+<element name="Promethium" symbol="Pm"   z="61"   sound=""     />
+<element name="Samarium" symbol="Sm"   z="62"   sound=""   />
+<element name="Europium" symbol="Eu"   z="63"   sound=""  />
+<element name="Gadolinium" symbol="Gd"   z="64"   sound=""  />
+<element name="Terbium" symbol="Tb"   z="65"   sound="" />
+<element name="Dysprosium" symbol="Dy"   z="66"   sound=""  />
+<element name="Holmium" symbol="Ho"   z="67"   sound="" />
+<element name="Erbium" symbol="Er"   z="68"   sound=""  />
+<element name="Thulium" symbol="Tm"   z="69"   sound="" />
+<element name="Ytterbium" symbol="Yb"   z="70"   sound=""  />
+<element name="Lutetium" symbol="Lu"   z="71"   sound=""   />
+<element name="Hafnium" symbol="Hf"   z="72"   sound=""  />
+<element name="Tantalum" symbol="Ta"   z="73"   sound="" />
+<element name="Tungsten" symbol="W"   z="74"   sound=""   />
+<element name="Rhenium" symbol="Re"   z="75"   sound="" />
+<element name="Osmium" symbol="Os"   z="76"   sound=""   />
+<element name="Iridium" symbol="Ir"   z="77"   sound=""  />
+<element name="Platinum" symbol="Pt"   z="78"   sound=""  />
+<element name="Gold" symbol="Au"   z="79"   sound=""  />
+<element name="Mercury" symbol="Hg"   z="80"   sound=""  />
+<element name="Thallium" symbol="Tl"   z="81"   sound=""  />
+<element name="Lead" symbol="Pb"   z="82"   sound=""  />
+<element name="Bismuth" symbol="Bi"   z="83"   sound=""   />
+<element name="Polonium" symbol="Po"   z="84"   sound=""     />
+<element name="Astatine" symbol="At"   z="85"   sound=""     />
+<element name="Radon" symbol="Rn"   z="86"   sound=""      />
+<element name="Francium" symbol="Fr"   z="87"   sound=""     />
+<element name="Radium" symbol="Ra"   z="88"   sound=""  />
+<element name="Actinium" symbol="Ac"   z="89"   sound=""      />
+<element name="Thorium" symbol="Th"   z="90"   sound="" />
+<element name="Protactinium" symbol="Pa"   z="91"   sound="" />
+<element name="Uranium" symbol="U"   z="92"   sound="" />
+<element name="Neptunium" symbol="Np"   z="93"   sound="" />
