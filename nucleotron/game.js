@@ -14,6 +14,7 @@ goog.require('nucleotron.Particle');
 goog.require('nucleotron.DecayTable');
 goog.require('nucleotron.DecayMethod');
 goog.require('nucleotron.Element');
+goog.require('nucleotron.ElementTable')
 goog.require('lime.audio.Audio');
 goog.require('nucleotron.Isotope');
 goog.require('goog.events.KeyCodes');
@@ -40,6 +41,8 @@ nucleotron.Game = function(mode) {
 	//this.particles[0] = null;
 	this.Isotope = new nucleotron.Isotope();
 	
+	//this.elementTable = new nucleotron.ElementTable("elements.xml");
+
     var back = new lime.fill.LinearGradient().addColorStop(0, '#bbb').addColorStop(1, '#DDD');
     this.setFill(back);
 
@@ -82,8 +85,8 @@ nucleotron.Game = function(mode) {
     //keyboard input
    	goog.events.listen(document, ['keydown'], function(e) {
                 if (e.keyCode == goog.events.KeyCodes.UP) {
-                        console.log("Z");
                         nucleotron.Game.prototype.spawnProtron();
+
                 }
                 if (e.keyCode == goog.events.KeyCodes.RIGHT) {
                         console.log("RIGHT");
@@ -183,16 +186,17 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 
 	goog.events.listenOnce(document, ['keydown'], function(e) {
 	          if (e.keyCode == goog.events.KeyCodes.Z) {
-                	this.spawnProtron;
-                	console.log("Z key pressed");
+                	this.spawnProtron();
                 }
                 if (e.keyCode == goog.events.KeyCodes.C) {
-                	this.spawnElectron;
+                	this.spawnElectron();
                 }
                 if (e.keyCode == goog.events.KeyCodes.X) {
-                	this.spawnAlpha;
+                	this.spawnAlpha();
                 }
     }, false, this);
+	
+	
 	
 	this.p1.setPosition(this.p1.getPosition().x += (this.velY * dt), this.p1.getPosition().y );
 
@@ -369,6 +373,7 @@ nucleotron.Game.prototype.buildElementDisplay = function(particleList){
 		if(particleList[i].Z >= 2){ //arbitrary for creating a particle
 			tempElement = new nucleotron.Element(particleList[i]);
 			this.elementList.appendChild(tempElement);
+			//this.elementTable.setElement(particleList[i], tempElement);
 			tempElement.setPosition(i * 50, 60);
 
 		}

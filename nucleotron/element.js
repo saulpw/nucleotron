@@ -4,6 +4,7 @@ goog.provide("nucleotron.Element");
 
 goog.require('lime.RoundedRect');
 
+
 nucleotron.Element = function(particle) {
     lime.RoundedRect.call(this);
 
@@ -15,6 +16,9 @@ nucleotron.Element = function(particle) {
 
     this.symbol = new lime.Label().setText('Tm').setPosition(25, 20).setFontSize(10);
     this.appendChild(this.symbol);
+
+    this.elementName = new lime.Label().setText('temprarium').setPosition(25, 25).setFontSize(8);
+    this.appendChild(this.elementName);
 
     this.n_count = new lime.Label().setText(particle.Z).setPosition(10, 30).setFontSize(10);
     this.appendChild(this.n_count);
