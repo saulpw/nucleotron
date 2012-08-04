@@ -36,12 +36,13 @@ nucleotron.Game = function(mode) {
     this.setAnchorPoint(0, 0);
     this.setSize(320, 550); //orig val 320,460
 	//this._decayTable = new nucleotron.DecayTable(); //initialize decay table.
+	this.isKeyDown = false;
 	//
 	this.particles = new Array();
 	//this.particles[0] = null;
 	this.Isotope = new nucleotron.Isotope();
 	
-	//this.elementTable = new nucleotron.ElementTable("elements.xml");
+	this.elementTable = new nucleotron.ElementTable("elements.xml");
 
     var back = new lime.fill.LinearGradient().addColorStop(0, '#bbb').addColorStop(1, '#DDD');
     this.setFill(back);
@@ -86,19 +87,19 @@ nucleotron.Game = function(mode) {
    	goog.events.listen(document, ['keydown'], function(e) {
                 if (e.keyCode == goog.events.KeyCodes.UP) {
                         nucleotron.Game.prototype.spawnProtron();
-
                 }
                 if (e.keyCode == goog.events.KeyCodes.RIGHT) {
-                        console.log("RIGHT");
-                        this.velY = 40;
+                     //   console.log("RIGHT");
+                     //   this.velY = 40;
                 }
                 if (e.keyCode == goog.events.KeyCodes.DOWN) {
-                        console.log("DOWN");
+                     //   console.log("DOWN");
                 }
                 if (e.keyCode == goog.events.KeyCodes.LEFT) {
-                        console.log("LEFT");
-                        this.velY = -40;
+                     //   console.log("LEFT");
+                     //   this.velY = -40;
                 }
+
 
         });
 };
@@ -185,7 +186,8 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 
 
 	goog.events.listenOnce(document, ['keydown'], function(e) {
-	          if (e.keyCode == goog.events.KeyCodes.Z) {
+	        if(!this.isKeyDown){  	
+	          	if (e.keyCode == goog.events.KeyCodes.Z) {
                 	this.spawnProtron();
                 }
                 if (e.keyCode == goog.events.KeyCodes.C) {
@@ -194,10 +196,24 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
                 if (e.keyCode == goog.events.KeyCodes.X) {
                 	this.spawnAlpha();
                 }
+                 if (e.keyCode == goog.events.KeyCodes.RIGHT) {
+                        this.velY = 0.4;
+                }
+                 if (e.keyCode == goog.events.KeyCodes.LEFT) {
+                        this.velY = -0.4;
+                }
+                this.isKeyDown = true;
+            }
     }, false, this);
 	
-	
-	
+
+	goog.events.listenOnce(document, ["keyup"], function(e){
+		if(e.keyCode == goog.events.KeyCodes.LEFT || e.keyCode == goog.events.KeyCodes.RIGHT){
+			this.velY = 0;
+		}
+		this.isKeyDown = false;
+	}, false, this);
+
 	this.p1.setPosition(this.p1.getPosition().x += (this.velY * dt), this.p1.getPosition().y );
 
 };
@@ -373,7 +389,7 @@ nucleotron.Game.prototype.buildElementDisplay = function(particleList){
 		if(particleList[i].Z >= 2){ //arbitrary for creating a particle
 			tempElement = new nucleotron.Element(particleList[i]);
 			this.elementList.appendChild(tempElement);
-			//this.elementTable.setElement(particleList[i], tempElement);
+			this.elementTable.setElement(particleList[i], tempElement);
 			tempElement.setPosition(i * 50, 60);
 
 		}

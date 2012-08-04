@@ -1,4 +1,6 @@
-<?xml version = "1.0" encoding = "UTF-8"?>\n<main>\n<isotope Z="0" N="1" halflife = "2.788">
+<?xml version = "1.0" encoding = "UTF-8"?>
+<main>
+  <isotope Z="0" N="1" halflife = "2.788">
   <method beta="-1" prob = "100"/>
 </isotope>
 <isotope Z="1" N="0" />
@@ -7881,4 +7883,4 @@
 <isotope Z="116" N="176" halflife = "-0.92">
   <method Z="2" N="2" prob = "100"/>
 </isotope>
-</main>\n
+</main>

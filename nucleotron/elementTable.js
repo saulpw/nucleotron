@@ -16,11 +16,12 @@ nucleotron.ElementTable = function(fileLocation) {
 	xmlhttp.send();
 
 	this.xmlDoc=xmlhttp.responseXML;
+	console.log(this.xmlDoc);
 }
 
 nucleotron.ElementTable.prototype.setElement = function(particle, element){
 
-	this.xmlDoc = $.parseXML( this.file );
+	//this.xmlDoc = $.parseXML( this.file );
    // $xml = $( xmlDoc ),
     //$title = $xml.find( "title" );
 
@@ -29,14 +30,16 @@ nucleotron.ElementTable.prototype.setElement = function(particle, element){
 
 	if(this.xmlDoc != null){
 		var elementDoc = this.xmlDoc.getElementsByTagName("element");
+		
 		var _Z = particle.Z;
 		var _N = particle.N;
 
 		for(var i = 0; i < 95; i++){
-			temp = elementDoc[i].getElementsByTagName("z");
+			temp = elementDoc[i].getAttribute("z");
 			if(temp == _Z){
-				element.symbol.setText(elementDoc[i].getElementsByTagName("symbol").childNodes[0].nodeValue);
-				element.elementName.setText(elementDoc[i].getElementsByTagName("name").childNodes[0].nodeValue);
+				element.symbol.setText(elementDoc[i].getAttribute("symbol"));
+				console.log("tried to create element");
+				element.elementName.setText(elementDoc[i].getAttribute("name"));
 			}	
 		}
 	}
