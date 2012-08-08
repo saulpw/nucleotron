@@ -18,38 +18,35 @@ nucleotron.DecayTable = function(){
 	this.doc;
 	this.docELement;
 	this.firstNode;
-	this.LoadXML('decay-shipped.xml');
+	this.Load('decay-shipped.xml');
 	this.constructNuclids();
 }
 
 
-nucleotron.DecayTable.prototype.Load = function(urlString){
-		_xml.ignoreWhite = true;
-        if(_xml.onLoad){
-        	this.constructNuclids();
-        }
-        else
-        {
-        	console.log("unable to load files");
-        }
-        _xml.load(urlString);
+nucleotron.DecayTable.prototype.Load = function(fileLocation){
+	this.file = fileLocation;
+	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+		  xmlhttp=new XMLHttpRequest();
+	}
+	else{// code for IE6, IE5
+		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.open("GET",this.file,false);
+	xmlhttp.send();
+
+	this.xmlDoc = xmlhttp.responseXML;
+	console.log(this.xmlDoc);
+
 
 }
 
-nucleotron.DecayTable.prototype.LoadXML = function(urlString){
-	//xmlDoc.getElementsByTagName("to")[0].childNodes[0].nodeValue;
-	this.doc = this.loadXMLDoc(urlString);
-	this.docElement = this.doc.documentElement;
-	this.firstNode=get_firstchild(this.docElement);
-
-}
 
 nucleotron.DecayTable.prototype.constructNuclids = function(){
 
 /*
 for (i=0;i<firstNode.childNodes.length;i++)
 */
-
+/*
 	for(i = 0; i < this.firstNode.childNodes.length; i++ ){
 		tempNode = this.firstNode.childNodes[i];
 		if (tempNode.nodeName = "element"){
@@ -58,11 +55,12 @@ for (i=0;i<firstNode.childNodes.length;i++)
 			this.elementSymbols[Z] = tempNode.attributes.symbol;
 		}
 	}
-
-	currentNode = get_firstchild(this.docElement);
+*/
+	this.docElement = this.xmlDoc.documentElement;
+	currentNode = this.docElement.firstchild;
 	while(currentNode){
 		this.populateTable(currentNode);
-		currentNode = get_nextSibling(currentNode);
+		currentNode = currentNode.nextsibling;
 	}
 
 }
@@ -72,14 +70,14 @@ nucleotron.DecayTable.prototype.populateTable = function(node){
 	if(node.nodeName != "isotope"){
 		return; 
 	}
-
+	//elementDoc[i].getAttribute("symbol")
 	this.numElementsParsed++;
-	Z = Number(node.attributes.Z);
-	N = Number(node.attributes.N);
+	var _Z = node.getAttribute("Z");
+	var _N = node.getAttribute("N");
 	tempIsotope = new Isotope();
 
 	if(node.attributes.halflife){
-		hl = Number(node.attributes.halflife);
+		hl = node.getAttribute("halflife");
 		if (hl < 0){
 			return;
 		}
@@ -91,7 +89,7 @@ nucleotron.DecayTable.prototype.populateTable = function(node){
 		tempIsotope.decayprob = 0.0;
 		tempIsotope.halflife = 16;
 	}
-	tempIsotope.massexcess = Number(node.attributes.massexcess);
+	tempIsotope.massexcess = node.getAttribute("massexcess");
 
 	j = 0;
 	for(j in node.childNodes){
@@ -99,11 +97,11 @@ nucleotron.DecayTable.prototype.populateTable = function(node){
 		if (dNode.nodeName != "method"){
 			continue;
 		}
-		tempIsotope.mechanisms.push(new DecayMethod(dNode.attributes.Z, dNode.attributes.N, dNode.attributes.beta, dNode.attributes.prob));
+		tempIsotope.mechanisms.push(new DecayMethod(dNode.getAttribute("Z"), dNode.getAttribute("N"), dNode.getAttribute("beta"), dNode.attributes.prob));
 
 	}
-	if(! this[Z]){
-		this[Z][N] = tempIsotope;
+	if(! this[_Z]){
+		this[_Z][_N] = tempIsotope;
 	}
 
 

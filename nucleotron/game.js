@@ -35,7 +35,7 @@ nucleotron.Game = function(mode) {
 	
     this.setAnchorPoint(0, 0);
     this.setSize(320, 550); //orig val 320,460
-	//this._decayTable = new nucleotron.DecayTable(); //initialize decay table.
+	this._decayTable = new nucleotron.DecayTable(); //initialize decay table.
 	this.isKeyDown = false;
 	//
 	this.particles = new Array();

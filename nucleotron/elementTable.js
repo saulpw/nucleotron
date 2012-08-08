@@ -16,7 +16,7 @@ nucleotron.ElementTable = function(fileLocation) {
 	xmlhttp.send();
 
 	this.xmlDoc=xmlhttp.responseXML;
-	console.log(this.xmlDoc);
+	//console.log(this.xmlDoc);
 }
 
 nucleotron.ElementTable.prototype.setElement = function(particle, element){
