@@ -60,7 +60,7 @@ nucleotron.Particle.prototype.updatePosition = function(dt) {
 	//v = v0 + at
 	this.vx = this.vxOld + this.acclx * dt;
 	this.vy = this.vyOld + this.accly * dt;
-	//console.log('this particle updated');
+
 	this.pos = this.shape.getPosition();
     //pos.x += this.v.x * dt * this.SPEED;
     this.pos.x += this.vx; //* dt * this.SPEED;
@@ -136,77 +136,6 @@ nucleotron.Particle.prototype.checkParticleCollision = function(particle){
 
 
 
-//Decay functions
-/*
-nucleotron.Particle.prototype.checkDecay = function (){
-	decay_energy = 0;
-	tempParticle = null;
-	if(this.charge < 0 && ( this.Z != 0 || this.N != 0 )){ //if the charge is negative
-		if(Math.random() < 0.01){
-			electrons--;
-			tempParticle = new nucleotron.Particle(type, 0, 0, 1)
-			decay_energy = 5;
-		}
-	} 
-	else if(Math.random() < this.Isotope().decayprob){ //need to initialize ISOTOPE
-		rand = Math.random();
-		for(i = 0; i < Isotope().mechanisms.length; i++){
-			mechs = Isotope().mechanisms[i];
-			
-			if(rand < mechs.decay){ //decay probably would go here
-				kev = this.Isotope().massexcess;
-				tempParticle = decay(mechs);
-				newKev = this.Isotope().massexcess;
-				if(tempParticle.isotope.massexcess){
-					kevnew += tempParticle.isotope.massexcess;
-				}
-				decay_energy = (kev - kevnew);
-				break;
-			}
-			
-			else{
-				rand -= mechs.probability;
-				//ignore decay method
-			}
-		}
-
-
-	}
-
-	if(tempParticle){
-		//create new particle
-		tempParticle.enableSimulation();
-		nucleotron.Game.addParticle();//TODO Implement addParticle in Game.js
-	}
-
-
-}
-
-nucleotron.Particle.prototype.decay = function(method){
-	tempParticle = new nucleotron.pa;
-	if(method.beta == 1){
-		this.Z--;
-		this.N++;
-		tempParticle = new Particle(this.type, 0, 0, -1);
-		emitNutrino();
-
-	}	
-	else if (method.beta == -1){
-		this.Z++;
-		this.N--;
-		tempParticle = new Particle(this.type, 0, 0, -1);
-		emitNutrino();
-	}
-	else{
-		this.Z = method.Z;
-		this.N = method.N;
-		tempParticle = new Particle(this.type, method.Z, method.N, 0);
-	}
-	return tempParticle;
-
-}
-*/
-
 nucleotron.Particle.prototype.updateGraphic = function(){
 	//destroy Shape.
 	this.shape.removeAllChildren();
@@ -245,13 +174,16 @@ nucleotron.Particle.prototype.updateGraphic = function(){
 
 }
 
-nucleotron.Particle.prototype.moveParticles = function(){
-	
+nucleotron.Particle.prototype.moveParticles = function(_dt){
+	//go through the particle list, move the particle's X and Y based on sin(x + dt)
+	for(i = 0; i < this.N; i++){
+
+	}
 }
 
 nucleotron.Particle.prototype.emitNutrino = function(){
 //later
-console.log("emit nutrino");
+alert("emit nutrino");
 }
 
 nucleotron.Particle.prototype.isHadron = function(){

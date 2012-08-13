@@ -4,7 +4,6 @@ goog.require('lime.RoundedRect');
 
 nucleotron.Player = function(is_down) {
     lime.Sprite.call(this);
-	console.log('created paddle');
     //this.setFill(200,100,0,.3);
     this.setSize(80, 50);
 

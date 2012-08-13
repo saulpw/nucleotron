@@ -36,6 +36,7 @@ nucleotron.Game = function(mode) {
     this.setAnchorPoint(0, 0);
     this.setSize(320, 550); //orig val 320,460
 	this._decayTable = new nucleotron.DecayTable(); //initialize decay table.
+	//console.log("# Isotopes " + this._decayTable.numElementsParsed);
 	this.isKeyDown = false;
 	//
 	this.particles = new Array();
@@ -75,33 +76,12 @@ nucleotron.Game = function(mode) {
 	this.world.appendChild(this.btnAlp);
 	
     this.ball = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(200, 0, 0);
-    //this.world.appendChild(this.ball);
+
     this.placeball();
 
     this.notice = new nucleotron.Notice().setPosition(160, 200).setHidden(false);
     this.appendChild(this.notice);
 
-    this.endRoundSound = new lime.audio.Audio('assets/applause.wav');
-    this.bounceSound = new lime.audio.Audio('assets/bounce.wav');
-    //keyboard input
-   	goog.events.listen(document, ['keydown'], function(e) {
-                if (e.keyCode == goog.events.KeyCodes.UP) {
-                        nucleotron.Game.prototype.spawnProtron();
-                }
-                if (e.keyCode == goog.events.KeyCodes.RIGHT) {
-                     //   console.log("RIGHT");
-                     //   this.velY = 40;
-                }
-                if (e.keyCode == goog.events.KeyCodes.DOWN) {
-                     //   console.log("DOWN");
-                }
-                if (e.keyCode == goog.events.KeyCodes.LEFT) {
-                     //   console.log("LEFT");
-                     //   this.velY = -40;
-                }
-
-
-        });
 };
 goog.inherits(nucleotron.Game, lime.Sprite);
 
@@ -130,11 +110,12 @@ nucleotron.Game.prototype.spawnParticles = function(type, n, z, e, av_pos) {
 	pos = av_pos;
 	this.tempParticle = new nucleotron.Particle(type, n, z, e);
 	this.tempParticle.enableSimulation(pos.x, pos.y - 60);
+	this.tempParticle.Isotope = this._decayTable.getIsotope(this.tempParticle.Z, this.tempParticle.N);
 	this.world.appendChild(this.tempParticle);
 	
 	this.particles.push(this.tempParticle);
 
-	console.log("particles: " + this.particles.length);
+	//console.log("particles: " + this.particles.length);
 }
 
 nucleotron.Game.prototype.spawnMethod = function(method, pX, pY){
@@ -154,7 +135,7 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 		{
 		    this.particles[i].checkCollision(this.world.getSize());
 			this.particles[i].updatePosition(dt);
-			//checkDecay(this.particles[i]);
+			this.checkDecay(this.particles[i]);
 			//loop through particles
 			var j;
 			for(j = 0; j < this.particles.length; j++){
@@ -291,7 +272,6 @@ nucleotron.Game.prototype.simulateCoulombs = function(particle1, particle2){
 	var posShape2 = particle2.shape.getPosition();
 	
 	var dist = Math.sqrt(Math.pow(posShape2.x - posShape1.x ,2) + Math.pow(posShape2.y - posShape1.y ,2) );
-	//mass	return (Math.abs(this.N) + Math.abs(this.Z)) * hadronMass + Math.abs(this.e) * electronMass;
 
 	var forceX = coluConst * (Math.abs(particle1.Z * particle2.Z) / Math.pow(dist, 2));
 	var forceY = coluConst * (Math.abs(particle1.Z * particle2.Z) / Math.pow(dist, 2));
@@ -304,12 +284,13 @@ nucleotron.Game.prototype.simulateCoulombs = function(particle1, particle2){
 
 nucleotron.Game.prototype.checkDecay = function(particle){
 	//check to see if the conditions are right to spawn a particle
+
 	decay_energy = 0;
 	if(this.charge < 0 && ( this.Z != 0 || this.N != 0 )){ //if the charge is negative
 		if(Math.random() < 0.01){
 			electrons--;
-			tempParticle = new nucleotron.Particle(type, 0, 0, 1);
-			this.spawnParticles(tempParticle, particle.getPosition.x, particle.getPosition.y);
+			tempParticle = new nucleotron.Particle(3, 0, 0, 1);
+			this.spawnParticles(tempParticle, particle.shape.getPosition().x, particle.shape.getPosition().y);
 			decay_energy = 5;
 		}
 	} 
@@ -332,18 +313,12 @@ nucleotron.Game.prototype.checkDecay = function(particle){
 			else{
 				rand -= mechs.probability;
 				//ignore decay method
-				//console.log("ignoring decay method");
+				alert("ignoring decay method");
 			}
+
 		}
 
-
 	}
-
-	//if(tempParticle){
-		//create new particle
-	//	this.spawnParticles(tempParticle, 50, 50);
-	//}
-
 
 }
 
@@ -378,7 +353,7 @@ nucleotron.Game.prototype.resetForce = function(particle){
 
 nucleotron.Game.prototype.emitNutrino = function(){
 	//emits a nutrino
-	console.log("nutrino emitted");
+	alert("nutrino emitted");
 }
 
 //build list of elements and display

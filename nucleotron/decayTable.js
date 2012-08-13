@@ -6,19 +6,23 @@ goog.require('nucleotron.DecayMethod');
 //	public var elementSymbols:Object = new Object();
 //	public var elementNames:Object = new Object();
 
-this.elementNames = new Array();
-this.elementSymbols = new Array();
-
-this.xmlDoc = null;
-
-this.numElementsParsed = 0;
 
 
 nucleotron.DecayTable = function(){
+	
+	this.elementNames = new Object();
+	this.elementSymbols = new Object();
+
+	this.xmlDoc = null;
+
+	this.numElementsParsed = 0;
+
+	this.decayArray = new Array();
+
 	this.doc;
 	this.docELement;
 	this.firstNode;
-	this.Load('decay-shipped.xml');
+	this.Load("decay-shipped.xml");
 	this.constructNuclids();
 }
 
@@ -35,48 +39,30 @@ nucleotron.DecayTable.prototype.Load = function(fileLocation){
 	xmlhttp.send();
 
 	this.xmlDoc = xmlhttp.responseXML;
-	console.log(this.xmlDoc);
-
-
 }
 
 
 nucleotron.DecayTable.prototype.constructNuclids = function(){
 
-/*
-for (i=0;i<firstNode.childNodes.length;i++)
-*/
-/*
-	for(i = 0; i < this.firstNode.childNodes.length; i++ ){
-		tempNode = this.firstNode.childNodes[i];
-		if (tempNode.nodeName = "element"){
-			Z = Number(tempNode.attributes.z);
-			this.elementNames[Z] = tempNode.attributes.name;
-			this.elementSymbols[Z] = tempNode.attributes.symbol;
-		}
-	}
-*/
 	this.docElement = this.xmlDoc.documentElement;
-	currentNode = this.docElement.firstchild;
-	while(currentNode){
+	currentNode = this.docElement.firstChild;
+	while(currentNode != null){
 		this.populateTable(currentNode);
-		currentNode = currentNode.nextsibling;
+		currentNode = currentNode.nextSibling;
 	}
 
 }
 
 nucleotron.DecayTable.prototype.populateTable = function(node){
-	
 	if(node.nodeName != "isotope"){
 		return; 
 	}
-	//elementDoc[i].getAttribute("symbol")
 	this.numElementsParsed++;
 	var _Z = node.getAttribute("Z");
 	var _N = node.getAttribute("N");
-	tempIsotope = new Isotope();
+	tempIsotope = new nucleotron.Isotope();
 
-	if(node.attributes.halflife){
+	if(node.getAttribute("halflife")){
 		hl = node.getAttribute("halflife");
 		if (hl < 0){
 			return;
@@ -97,18 +83,54 @@ nucleotron.DecayTable.prototype.populateTable = function(node){
 		if (dNode.nodeName != "method"){
 			continue;
 		}
-		tempIsotope.mechanisms.push(new DecayMethod(dNode.getAttribute("Z"), dNode.getAttribute("N"), dNode.getAttribute("beta"), dNode.attributes.prob));
+		tempIsotope.mechanisms.push(new nucleotron.DecayMethod(dNode.getAttribute("Z"), dNode.getAttribute("N"), dNode.getAttribute("beta"), dNode.attributes.prob));
 
 	}
-	if(! this[_Z]){
-		this[_Z][_N] = tempIsotope;
+	if(this.decayArray[_Z] == null){
+		this.decayArray[_Z] = new Array(2);
 	}
+
+	this.decayArray[_Z][_N] = tempIsotope;
 
 
 }
 
+nucleotron.DecayTable.prototype.setIsotope = function(z, n){
+	var retIsotope = new nucleotron.Isotope();
+
+	//perform XML lookup
+	currentNode = this.docElement.firstchild;
+
+	while(currentNode){
+		if(currentNode.getAttribute("Z") == z)
+		{
+			var i = 0;
+			for(i in currentNode.childNodes[i]){
+				dNode = currentNode.childNodes[i];
+				if (dNode.nodeName != "method"){
+					continue;
+				}
+				retIsotope.mechanisms.push(new DecayMethod(dNode.getAttribute("Z"), dNode.getAttribute("N"), dNode.getAttribute("beta"), dNode.getAttribute("prob")));
+			}
+			 
+			//retIsotope.prob = currentNode.getAttribute("prob");
+			retIsotope.halfLife = currentNode.getAttribute("halflife");
+			//retIsotope.massExcess = currentNode.getAttribute("massexcess");
+		}
+		else{
+			currentNode = currentNode.nextsibling;
+		}
+	}
+
+	return retIsotope;
+}
+
 nucleotron.DecayTable.prototype.getIsotope = function(z, n){
-	return this[z][n];
+	return this.decayArray[z][n];
+}
+
+nucleotron.DecayTable.prototype.getFirstChild = function(node){
+	var n = node.first
 }
 
 nucleotron.DecayTable.prototype.loadXMLDoc = function(dname)
