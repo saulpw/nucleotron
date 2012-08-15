@@ -22,6 +22,8 @@ nucleotron.Particle = function(type, _N, _Z, _e){
 	this.setAnchorPoint(.5, 0);
 	this.shape = new lime.Circle().setSize(this.RADIUS * 2, this.RADIUS * 2).setFill(200, 0, 0);
 	this.appendChild(this.shape);
+
+	this.particleList = new Array();
 	
 	this.vx = 0.0;
 	this.vy = 0.0;
@@ -140,8 +142,8 @@ nucleotron.Particle.prototype.updateGraphic = function(){
 	//destroy Shape.
 	this.shape.removeAllChildren();
 	//range mounts
-	min = -1.5;
-	max = 1.5;
+	min = -0.5;
+	max = 0.5;
 	//electron sheild at the bottom
 	if(this.e >= 2){
 		shell = new lime.Circle().setSize(this.RADIUS * 5, this.RADIUS * 5).setFill(0,0,200,0.5).setAnchorPoint(0.5, 0.5);
@@ -161,14 +163,19 @@ nucleotron.Particle.prototype.updateGraphic = function(){
 		tempX = min + (max - min) * Math.random();
 		tempY = min + (max - min) * Math.random();
 		tempshape.setAnchorPoint(tempX, tempY);
+		tempshape.angle = 360 * Math.random();
 		this.shape.appendChild(tempshape);
+		this.particleList[i] = tempshape;
+
 	}
 	for(i = 0; i < this.N; i++){
 		tempshape = new lime.Circle().setSize(this.RADIUS * 1.5, this.RADIUS * 1.5).setFill(0, 0, 200);
 		tempX = min + (max - min) * Math.random();
 		tempY = min + (max - min) * Math.random();
 		tempshape.setAnchorPoint(tempX, tempY);
+		tempshape.angle = 360 * Math.random();
 		this.shape.appendChild(tempshape);
+		this.particleList[i + this.Z] = tempshape;
 	}
 	
 
@@ -176,8 +183,11 @@ nucleotron.Particle.prototype.updateGraphic = function(){
 
 nucleotron.Particle.prototype.moveParticles = function(_dt){
 	//go through the particle list, move the particle's X and Y based on sin(x + dt)
-	for(i = 0; i < this.N; i++){
-
+	diff = _dt / 0.15;
+	for(i = 0; i < this.particleList.length; i++){
+		//this.particleList[i].setPosition(Math.cos(this.particleList[i].getPosition().x), Math.cos(this.particleList[i].getPosition().y));
+		
+		this.particleList[i].setPosition( 20 * Math.cos(this.particleList[i].angle += (diff)), 20 * Math.sin(this.particleList[i].angle += (diff) ) );
 	}
 }
 

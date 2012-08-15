@@ -135,6 +135,7 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 		{
 		    this.particles[i].checkCollision(this.world.getSize());
 			this.particles[i].updatePosition(dt);
+			this.particles[i].moveParticles(dt);
 			this.checkDecay(this.particles[i]);
 			//loop through particles
 			var j;
