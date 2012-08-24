@@ -29,6 +29,9 @@ nucleotron.Particle = function(type, _N, _Z, _e){
 	this.vy = 0.0;
 	this.vxOld = 0.0;
 	this.vyOld = 0.0;
+
+	this.maxV = 3.5; //max velocity
+
 	this.charge = -1;
 	//this.posCharge = true;
 	this.MASS = 5;
@@ -62,6 +65,16 @@ nucleotron.Particle.prototype.updatePosition = function(dt) {
 	//v = v0 + at
 	this.vx = this.vxOld + this.acclx * dt;
 	this.vy = this.vyOld + this.accly * dt;
+
+	if(this.vx > this.maxV){
+		this.vx = this.maxV;
+
+	}
+	if(this.vy > this.maxV){
+		this.vy = this.maxV;
+
+	}
+
 
 	this.pos = this.shape.getPosition();
     //pos.x += this.v.x * dt * this.SPEED;
@@ -120,7 +133,7 @@ nucleotron.Particle.prototype.checkParticleCollision = function(particle){
 	
 	var radii = Math.abs(this.RADIUS + otherRad);
 	
-	if (distance <= radii && this.particle_type == 3){
+	if (distance <= radii){
 
 		//collision
 		//this.shape.setFill(0, 200, 0);

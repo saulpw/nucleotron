@@ -94,11 +94,11 @@ nucleotron.Game.prototype.start = function() {
 
 //spawn particles
 nucleotron.Game.prototype.spawnProtron = function() {
-	this.spawnParticles(1, 1, 1, 0, this.p1.getPosition());
+	this.spawnParticles(1, 0, 1, 0, this.p1.getPosition());
 }
 
 nucleotron.Game.prototype.spawnElectron = function() {
-	this.spawnParticles(2, 1, 1, 1, this.p1.getPosition());
+	this.spawnParticles(2, 0, 0, 1, this.p1.getPosition());
 }
 
 nucleotron.Game.prototype.spawnAlpha = function() {
@@ -110,9 +110,14 @@ nucleotron.Game.prototype.spawnParticles = function(type, n, z, e, av_pos) {
 	pos = av_pos;
 	this.tempParticle = new nucleotron.Particle(type, n, z, e);
 	this.tempParticle.enableSimulation(pos.x, pos.y - 60);
-	this.tempParticle.Isotope = this._decayTable.getIsotope(this.tempParticle.Z, this.tempParticle.N);
+	if(type != 2){
+		this.tempParticle.Isotope = this._decayTable.getIsotope(this.tempParticle.Z, this.tempParticle.N);
+	}
+	else {
+		this.tempParticle.Isotope = this._decayTable.getIsotope(1, 1);
+	}
+	console.log(this._decayTable.getIsotope(this.tempParticle.Z, this.tempParticle.N));
 	this.world.appendChild(this.tempParticle);
-	
 	this.particles.push(this.tempParticle);
 
 	//console.log("particles: " + this.particles.length);
@@ -172,10 +177,10 @@ nucleotron.Game.prototype.step_ = function(dt) { //Update loop
 	          	if (e.keyCode == goog.events.KeyCodes.Z) {
                 	this.spawnProtron();
                 }
-                if (e.keyCode == goog.events.KeyCodes.C) {
+                if (e.keyCode == goog.events.KeyCodes.X) {
                 	this.spawnElectron();
                 }
-                if (e.keyCode == goog.events.KeyCodes.X) {
+                if (e.keyCode == goog.events.KeyCodes.C) {
                 	this.spawnAlpha();
                 }
                  if (e.keyCode == goog.events.KeyCodes.RIGHT) {
@@ -285,6 +290,10 @@ nucleotron.Game.prototype.simulateCoulombs = function(particle1, particle2){
 
 nucleotron.Game.prototype.checkDecay = function(particle){
 	//check to see if the conditions are right to spawn a particle
+
+	if (particle.Isotope.decayProbab == null){
+		return;
+	}
 
 	decay_energy = 0;
 	if(this.charge < 0 && ( this.Z != 0 || this.N != 0 )){ //if the charge is negative
